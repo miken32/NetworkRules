@@ -16,13 +16,13 @@ composer require miken32/network-rules
 ## Available Validation Rules
 Here is a list of the available rules and their usage.
 
-[In Network](#innetworkcidr)
-[IP Or Net](#ipornet)
-[Netv4](#netv4lowhigh)
-[Netv6](#netv6lowhigh)
-[Private IP](#privateip)
-[Private IPv4](#privateipv4)
-[Private IPv6](#privateipv6)
+[In Network](#in_networkcidr)<br/>
+[IP Or Net](#ip_or_net)<br/>
+[Netv4](#netv4lowhigh)<br/>
+[Netv6](#netv6lowhigh)<br/>
+[Private IP](#private_ip)<br/>
+[Private IPv4](#private_ipv4)<br/>
+[Private IPv6](#private_ipv6)
 
 ### in_network:cidr
 The field under validation must be an IP address within the given network. The network must be given in CIDR notation, and may be either an IPv4 or IPv6 network.
@@ -86,6 +86,8 @@ class MyFormRequest extends FormRequest
     public function rules(): array
     {
         return [
+
+          'address'      => ['in_network:192.168.10.0/24'], // must be an IPv4 address in the specified network
           'subnet'       => ['netv4:20,24'], // must be an IPv4 CIDR network between 20 and 24 bits
           'ipv6_subnet'  => ['netv6:48,56'], // must be an IPv6 CIDR network between 48 and 56 bits
         ];
@@ -105,6 +107,7 @@ class AnotherFormRequest extends FormRequest
     public function rules(): array
     {
         return [
+          'address'      => [new Rules\AddressInSubnet('192.168.10.0/24')], // must be an IPv4 address in the specified network
           'subnet'       => [new Rules\Ipv4Network(20, 24)], // must be an IPv4 CIDR network between 20 and 24 bits
           'ipv6_subnet'  => [new Rules\Ipv6Network(48, 56)], // must be an IPv6 CIDR network between 48 and 56 bits
         ];
