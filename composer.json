@@ -1,0 +1,39 @@
+{
+  "name": "miken32/ip-validation-rules",
+  "version": "1.0",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "AGPL-3.0",
+  "authors": [
+    {
+      "name": "Michael Newton",
+      "homepage": "https://github.com/miken32/"
+    }
+  ],
+  "require": {
+    "php": "^8.0"
+  },
+  "require-dev": {
+    "fakerphp/faker": "^1.0",
+    "laravel/framework": "^10.0",
+    "orchestra/testbench": "^8.0",
+    "phpunit/phpunit": "^10.1"
+  },
+  "autoload": {
+      "psr-4": {
+          "Miken32\\Validation\\Network\\": "src/"
+      }
+  },
+  "autoload-dev": {
+      "psr-4": {
+          "Miken32\\Validation\\Tests\\": "tests/"
+      }
+  },
+  "extra": {
+      "laravel": {
+          "providers": [
+              "Miken32\\Validation\\Network\\Providers\\ValidationProvider"
+          ]
+      }
+    }
+}
