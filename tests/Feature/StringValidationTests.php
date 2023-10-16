@@ -203,4 +203,74 @@ class StringValidationTests extends TestCase
             ['input_test' => 'in_network:2601:44ec:a425e::/64']
         );
     }
+
+    public function testItAcceptsValidRoutableIpv4Addresses(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '1.1.1.1'],
+            ['input_test' => 'routable_ipv4']
+        );
+    }
+
+    public function testItAcceptsValidRoutableIpv6Addresses(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '2600:482e:1948::21'],
+            ['input_test' => 'routable_ipv6']
+        );
+    }
+    public function testItAcceptsValidRoutableIpAddresses(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '1.1.1.1'],
+            ['input_test' => 'routable_ip']
+        );
+        Validator::validate(
+            ['input_test' => '2600:482e:1948::21'],
+            ['input_test' => 'routable_ip']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpv4Addresses(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IPv4 address');
+        Validator::validate(
+            ['input_test' => '192.168.24.10'],
+            ['input_test' => 'routable_ipv4']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpv6Addresses(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IPv6 address');
+        Validator::validate(
+            ['input_test' => 'fd00:48de:ac19::8d'],
+            ['input_test' => 'routable_ipv6']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpAddressesWithIpv4(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IP address');
+        Validator::validate(
+            ['input_test' => '10.5.38.218'],
+            ['input_test' => 'routable_ip']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableAddressesWithIpv6(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IP address');
+        Validator::validate(
+            ['input_test' => '2001:0000:0000::f298'],
+            ['input_test' => 'routable_ip']
+        );
+    }
 }

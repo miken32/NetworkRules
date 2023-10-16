@@ -52,6 +52,56 @@ class Util
         return !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
     }
 
+    public static function validRoutableIP4Address(string $value): bool
+    {
+        $priv_res = filter_var(
+            $value,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        );
+        if (!$priv_res) {
+            return false;
+        }
+        // implementing the same restrictions as PHP 8.2's FILTER_FLAG_GLOBAL_RANGE
+        $ip = explode('.', $value);
+
+        return !(
+            ($ip[0] === '100' && $ip[1] >= 64 && $ip[1] <= 127)
+            || ($ip[0] === '192' && $ip[1] === '0' && $ip[2] === '0')
+            || ($ip[0] === '192' && $ip[1] === '0' && $ip[2] === '2')
+            || ($ip[0] === '198' && $ip[1] >= 18 && $ip[1] <= 19)
+            || ($ip[0] === '198' && $ip[1] === '51' && $ip[2] === '100')
+            || ($ip[0] === '203' && $ip[1] === '0' && $ip[2] === '113')
+        );
+    }
+
+    public static function validRoutableIP6Address(string $value): bool
+    {
+        $priv_res = filter_var(
+            $value,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        );
+        if (!$priv_res) {
+            return false;
+        }
+        // implementing the same restrictions as PHP 8.2's FILTER_FLAG_GLOBAL_RANGE
+        $ip = str_split(bin2hex(inet_pton($value)), 4);
+
+        return !(
+            ($ip[0] === '0100' && $ip[1] === '0000' && $ip[2] === '0000' && $ip[3] === '0000')
+            || ($ip[0] === '2001' && intval($ip[1], 16) < 0x01ff)
+            || ($ip[0] === '2001' && $ip[1] === '0002' && $ip[2] === '0000')
+            || (intval($ip[0], 16) >= 0xfc00 && intval($ip[0], 16) <= 0xfdff)
+        );
+    }
+
+    public static function validRoutableAddress(string $value): bool
+    {
+        return self::validRoutableIP4Address($value)
+            || self::validRoutableIP6Address($value);
+    }
+
     public static function validIp4Subnet(
         string $value,
         int $low = self::IPV4_RANGE_MIN,
@@ -106,18 +156,12 @@ class Util
     public static function addressWithinSubnet(string $address, string $subnet): bool
     {
         [$network, $bits] = explode('/', $subnet);
-        if (
-            self::validIp4Address($address)
-            && self::validIp4Subnet($subnet)
-        ) {
+        if (self::validIp4Address($address) && self::validIp4Subnet($subnet)) {
             // working with ints
             $address = ip2long($address);
             $network = ip2long($network);
             $mask = -1 << (32 - $bits);
-        } elseif (
-            self::validIp6Address($address)
-            && self::validIp6Subnet($subnet)
-        ) {
+        } elseif (self::validIp6Address($address) && self::validIp6Subnet($subnet)) {
             // working with binary strings
             $address = inet_pton($address);
             $network = inet_pton($network);

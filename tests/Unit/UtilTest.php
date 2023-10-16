@@ -99,6 +99,59 @@ class UtilTest extends TestCase
     }
 
     /**
+     * @covers Util::testValidRoutableIP4Address()
+     */
+    public function testValidRoutableIP4Address(): void
+    {
+        $this->assertTrue(Util::validRoutableIP4Address('1.1.1.1'));
+        $this->assertTrue(Util::validRoutableIP4Address('216.234.62.195'));
+
+        $this->assertFalse(Util::validRoutableIP4Address('10.10.0.48'));
+        $this->assertFalse(Util::validRoutableIP4Address('172.16.20.34'));
+        $this->assertFalse(Util::validRoutableIP4Address('192.168.10.128'));
+        $this->assertFalse(Util::validRoutableIP4Address('169.254.229.28'));
+        $this->assertFalse(Util::validRoutableIP4Address('172.16.68.206'));
+        $this->assertFalse(Util::validRoutableIP4Address('240.234.58.22'));
+    }
+
+    /**
+     * @covers Util::testValidRoutableIP6Address()
+     */
+    public function testValidRoutableIP6Address(): void
+    {
+        $v6 = $this->faker->ipv6;
+        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        $this->assertTrue(Util::validRoutableIP6Address($v6));
+        $v6 = $this->faker->ipv6;
+        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $this->assertFalse(Util::validRoutableIP6Address($v6));
+        $this->assertFalse(Util::validRoutableIP6Address('2001::f00d:3ac3'));
+    }
+
+    /**
+     * @covers Util::testValidRoutableAddress()
+     */
+    public function testValidRoutableAddress(): void
+    {
+        $this->assertTrue(Util::validRoutableAddress('1.1.1.1'));
+        $this->assertTrue(Util::validRoutableAddress('216.234.62.195'));
+        $v6 = $this->faker->ipv6;
+        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        $this->assertTrue(Util::validRoutableAddress($v6));
+
+        $this->assertFalse(Util::validRoutableAddress('10.10.0.48'));
+        $this->assertFalse(Util::validRoutableAddress('172.16.20.34'));
+        $this->assertFalse(Util::validRoutableAddress('192.168.10.128'));
+        $this->assertFalse(Util::validRoutableAddress('169.254.229.28'));
+        $this->assertFalse(Util::validRoutableAddress('172.16.68.206'));
+        $this->assertFalse(Util::validRoutableAddress('240.234.58.22'));
+        $v6 = $this->faker->ipv6;
+        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $this->assertFalse(Util::validRoutableAddress($v6));
+        $this->assertFalse(Util::validRoutableAddress('2001::f00d:3ac3'));
+    }
+
+    /**
      * @covers Util::testValidIp4Subnet()
      */
     public function testValidIp4Subnet(): void

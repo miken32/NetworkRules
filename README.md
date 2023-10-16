@@ -22,7 +22,10 @@ Here is a list of the available rules and their usage.
 [Netv6](#netv6lowhigh)<br/>
 [Private IP](#private_ip)<br/>
 [Private IPv4](#private_ipv4)<br/>
-[Private IPv6](#private_ipv6)
+[Private IPv6](#private_ipv6)<br/>
+[Routable IP](#routable_ip)<br/>
+[Routable IPv4](#routable_ipv4)<br/>
+[Routable IPv6](#routable_ipv6)
 
 ### in_network:cidr
 The field under validation must be an IP address within the given network. The network must be given in CIDR notation, and may be either an IPv4 or IPv6 network.
@@ -73,6 +76,15 @@ The field under validation must be a private IPv4 addresses. The networks consid
 
 ### private_ipv6
 The field under validation must be a private IPv6 addresses. The networks considered private are described in the `private_ip` rule.
+
+### routable_ip
+The field under validation must be a globally routable IPv4 or IPv6 address. This excludes all private and reserved ranges, as detailed the the `private_ip` rule.
+
+### routable_ipv4
+The field under validation must be a globally routable IPv4 address. This excludes all private and reserved ranges, as detailed the the `private_ip` rule.
+
+### routable_ipv6
+The field under validation must be a globally routable IPv6 address. This excludes all private and reserved ranges, as detailed the the `private_ip` rule.
 
 ## Usage
 The included validation rules can be used either as traditional string-based validation rules or as instantiated classes. The following code blocks perform identical validations.
