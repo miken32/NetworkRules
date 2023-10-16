@@ -4,7 +4,7 @@ namespace Miken32\Validation\Network\Rules;
 
 use Miken32\Validation\Network\Util;
 
-class AddressInSubnet extends BaseRule
+class InNetwork extends BaseRule
 {
     public function __construct(private ?string $network = null)
     {

@@ -34,16 +34,18 @@ The field under validation must be an IP address within the given network. The n
 ### ip_or_net
 The field under validation must be an IP address or network in CIDR notation. The address or network may be either IPv4 or IPv6.
 
-### netv4:low,high
-The field under validation must be an IPv4 network in CIDR notation. The number of bits in the mask must be between `low` and `high`.
+### netv4:_low_,_high_
+The field under validation must be an IPv4 network in CIDR notation. If provided, the number of bits in the mask must be between `low` and `high`; otherwise, default values of 0 and 32 are used.
 ```none
-'network' => 'netv4:20,24'
+'bounded_network'   => 'netv4:20,24',
+'unbounded_network' => 'netv4'
 ```
 
-### netv6:low,high
-The field under validation must be an IPv6 network in CIDR notation. The number of bits in the mask must be between `low` and `high`.
+### netv6:_low_,_high_
+The field under validation must be an IPv6 network in CIDR notation. If provided, the number of bits in the mask must be between `low` and `high`; otherwise, default values of 0 and 128 are used.
 ```none
-'network' => 'netv6:56,64'
+'bounded_network'   => 'netv6:56,64'
+'unbounded_network' => 'netv6'
 ```
 
 ### private_ip
@@ -88,12 +90,13 @@ class MyFormRequest extends FormRequest
         return [
 
           'address'      => ['in_network:192.168.10.0/24'], // must be an IPv4 address in the specified network
-          'subnet'       => ['netv4:20,24'], // must be an IPv4 CIDR network between 20 and 24 bits
+          'subnet'       => ['netv4'], // must be an IPv4 CIDR network
           'ipv6_subnet'  => ['netv6:48,56'], // must be an IPv6 CIDR network between 48 and 56 bits
         ];
     }
 }
 ```
+
 ```php
 <?php
 
@@ -107,9 +110,9 @@ class AnotherFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-          'address'      => [new Rules\AddressInSubnet('192.168.10.0/24')], // must be an IPv4 address in the specified network
-          'subnet'       => [new Rules\Ipv4Network(20, 24)], // must be an IPv4 CIDR network between 20 and 24 bits
-          'ipv6_subnet'  => [new Rules\Ipv6Network(48, 56)], // must be an IPv6 CIDR network between 48 and 56 bits
+          'address'      => [new Rules\InNetwork('192.168.10.0/24')], // must be an IPv4 address in the specified network
+          'subnet'       => [new Rules\Netv4()], // must be an IPv4 CIDR network
+          'ipv6_subnet'  => [new Rules\Netv6(48, 56)], // must be an IPv6 CIDR network between 48 and 56 bits
         ];
     }
 }

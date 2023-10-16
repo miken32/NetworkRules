@@ -5,13 +5,13 @@ namespace Miken32\Validation\Network\Rules;
 use InvalidArgumentException;
 use Miken32\Validation\Network\Util;
 
-class Ipv6Network extends BaseRule
+class Netv4 extends BaseRule
 {
     private bool $validMask = true;
 
     public function __construct(
-        private ?int $minBits = Util::IPV6_RANGE_MIN,
-        private ?int $maxBits = Util::IPV6_RANGE_MAX
+        private ?int $minBits = Util::IPV4_RANGE_MIN,
+        private ?int $maxBits = Util::IPV4_RANGE_MAX
     )
     {
     }
@@ -20,19 +20,19 @@ class Ipv6Network extends BaseRule
     {
         if ($this->extended) {
             // called by string method
-            $this->minBits = (int)($parameters[0] ?? Util::IPV6_RANGE_MIN);
-            $this->maxBits = (int)($parameters[1] ?? Util::IPV6_RANGE_MAX);
+            $this->minBits = (int)($parameters[0] ?? Util::IPV4_RANGE_MIN);
+            $this->maxBits = (int)($parameters[1] ?? Util::IPV4_RANGE_MAX);
         }
 
         if (
             $this->minBits < 0
-            || $this->maxBits > Util::IPV6_RANGE_MAX
+            || $this->maxBits > Util::IPV4_RANGE_MAX
             || $this->minBits > $this->maxBits
         ) {
             throw new InvalidArgumentException('Invalid subnet validation rule arguments');
         }
 
-        $result = Util::validIp6Subnet($value, $this->minBits, $this->maxBits);
+        $result = Util::validIp4Subnet($value, $this->minBits, $this->maxBits);
         if (!$result && str_contains($value, '/')) {
             [, $mask] = explode('/', $value);
             $this->validMask = Util::validRange($mask, $this->minBits, $this->maxBits);
@@ -54,6 +54,6 @@ class Ipv6Network extends BaseRule
             );
         }
 
-        return __('The :attribute field must be a valid IPv6 subnet in CIDR notation');
+        return __('The :attribute field must be a valid IPv4 subnet in CIDR notation');
     }
 }

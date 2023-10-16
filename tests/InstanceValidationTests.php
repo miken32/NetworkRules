@@ -13,7 +13,7 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ["input_test" => $this->faker->localIpv4],
-            ["input_test" => new Rules\Ipv4PrivateAddress()]
+            ["input_test" => new Rules\PrivateIpv4()]
         );
     }
 
@@ -24,7 +24,7 @@ class InstanceValidationTests extends TestCase
         $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
         Validator::validate(
             ["input_test" => $v6],
-            ["input_test" => new Rules\Ipv6PrivateAddress()]
+            ["input_test" => new Rules\PrivateIpv6()]
         );
     }
 
@@ -33,13 +33,13 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ["input_test" => $this->faker->localIpv4],
-            ["input_test" => new Rules\IpPrivateAddress()]
+            ["input_test" => new Rules\PrivateIp()]
         );
         $v6 = $this->faker->ipv6;
         $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
         Validator::validate(
             ["input_test" => $v6],
-            ["input_test" => new Rules\IpPrivateAddress()]
+            ["input_test" => new Rules\PrivateIp()]
         );
     }
 
@@ -49,7 +49,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid private IPv4 address');
         Validator::validate(
             ['input_test' => '23.81.66.01'],
-            ['input_test' => new Rules\Ipv4PrivateAddress()]
+            ['input_test' => new Rules\PrivateIpv4()]
         );
     }
 
@@ -59,7 +59,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid private IPv6 address');
         Validator::validate(
             ['input_test' => '20' . substr($this->faker->ipv6, 2)],
-            ['input_test' => new Rules\Ipv6PrivateAddress()]
+            ['input_test' => new Rules\PrivateIpv6()]
         );
     }
 
@@ -69,7 +69,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid private IP address');
         Validator::validate(
             ['input_test' => '23.81.66.31'],
-            ['input_test' => new Rules\IpPrivateAddress()]
+            ['input_test' => new Rules\PrivateIp()]
         );
     }
 
@@ -78,7 +78,7 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/20'],
-            ['input_test' => new Rules\Ipv4Network(20, 24)]
+            ['input_test' => new Rules\Netv4(20, 24)]
         );
     }
 
@@ -87,7 +87,7 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/64'],
-            ['input_test' => new Rules\Ipv6Network(60, 64)]
+            ['input_test' => new Rules\Netv6(60, 64)]
         );
     }
 
@@ -96,11 +96,11 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/24'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/64'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
     }
 
@@ -109,7 +109,7 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/20'],
-            ['input_test' => new Rules\Ipv4Network()]
+            ['input_test' => new Rules\Netv4()]
         );
     }
 
@@ -118,7 +118,7 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/64'],
-            ['input_test' => new Rules\Ipv6Network()]
+            ['input_test' => new Rules\Netv6()]
         );
     }
 
@@ -127,11 +127,11 @@ class InstanceValidationTests extends TestCase
         $this->expectNotToPerformAssertions();
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/24'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/64'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
     }
 
@@ -141,7 +141,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must have a network mask between 20 and 24 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/28'],
-            ['input_test' => new Rules\Ipv4Network(20, 24)]
+            ['input_test' => new Rules\Netv4(20, 24)]
         );
     }
 
@@ -151,7 +151,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must have a network mask between 60 and 64 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/48'],
-            ['input_test' => new Rules\Ipv6Network(60, 64)]
+            ['input_test' => new Rules\Netv6(60, 64)]
         );
     }
 
@@ -161,7 +161,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid IPv4 subnet in CIDR notation');
         Validator::validate(
             ['input_test' => '43.97.4.382/20'],
-            ['input_test' => new Rules\Ipv4Network()]
+            ['input_test' => new Rules\Netv4()]
         );
     }
 
@@ -171,7 +171,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must have a network mask between 0 and 128 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/200'],
-            ['input_test' => new Rules\Ipv6Network()]
+            ['input_test' => new Rules\Netv6()]
         );
     }
 
@@ -181,7 +181,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid IP address, or a subnet in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/48'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
     }
 
@@ -191,7 +191,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid IP address, or a subnet in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . 'x/64'],
-            ['input_test' => new Rules\IpAddressOrSubnet()]
+            ['input_test' => new Rules\IpOrNet()]
         );
     }
 
@@ -201,7 +201,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid IP address within the 10.0.0.0/8 subnet');
         Validator::validate(
             ['input_test' => '172.16.0.56'],
-            ['input_test' => new Rules\AddressInSubnet('10.0.0.0/8')]
+            ['input_test' => new Rules\InNetwork('10.0.0.0/8')]
         );
     }
 
@@ -211,7 +211,7 @@ class InstanceValidationTests extends TestCase
         $this->expectExceptionMessage('The input test field must be a valid IP address within the 2601:44ec:a425e::/64 subnet');
         Validator::validate(
             ['input_test' => '2608:445d:2183:ce42::582c'],
-            ['input_test' => new Rules\AddressInSubnet('2601:44ec:a425e::/64')]
+            ['input_test' => new Rules\InNetwork('2601:44ec:a425e::/64')]
         );
     }
 }
