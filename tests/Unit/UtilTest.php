@@ -106,6 +106,21 @@ class UtilTest extends TestCase
     }
 
     /**
+     * @covers Util::validPrivateIPNetwork()
+     * @testdox Util::validPrivateIPNetwork()
+     */
+    public function testValidPrivateIPNetwork(): void
+    {
+        $this->assertTrue(Util::validPrivateIPNetwork('10.0.0.0/8'));
+        $this->assertTrue(Util::validPrivateIPNetwork('172.16.12.5/24'));
+        $this->assertTrue(Util::validPrivateIPNetwork('192.168.255.255/32'));
+        $this->assertTrue(Util::validPrivateIPNetwork('fd00:48ca::/96'));
+
+        $this->assertFalse(Util::validPrivateIPNetwork('8.8.8.0/24'));
+        $this->assertFalse(Util::validPrivateIPNetwork('2000:45c3:8c2a:33ac::/64'));
+    }
+
+    /**
      * @covers Util::validRoutableIPv4Address()
      * @testdox Util::validRoutableIPv4Address()
      */

@@ -52,6 +52,28 @@ class Util
         return !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
     }
 
+    public static function validPrivateIPNetwork(string $value): bool
+    {
+        if (self::validIPv4Network($value)) {
+            [$net, $mask] = explode('/', $value);
+            return match(true) {
+                self::addressWithinNetwork($net, '10.0.0.0/8') => $mask >= 8,
+                self::addressWithinNetwork($net, '172.16.0.0/12') => $mask >= 12,
+                self::addressWithinNetwork($net, '192.168.0.0/16') => $mask >= 16,
+                default => false
+            };
+        }
+        if (self::validIPv6Network($value)) {
+            [$net, $mask] = explode('/', $value);
+            if (self::validPrivateIPv6Address($net)) {
+                // fc00::/7 is the only private range
+                return $mask >= 7;
+            }
+        }
+
+        return false;
+    }
+
     public static function validRoutableIPv4Address(string $value): bool
     {
         $priv_res = filter_var(

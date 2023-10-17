@@ -293,4 +293,41 @@ class StringValidationTests extends TestCase
             ['input_test' => 'routable_ip']
         );
     }
+
+    public function testItAcceptsValidPrivateNetworks(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => $this->faker->localIpv4 . '/20'],
+            ['input_test' => 'private_net']
+        );
+        $v6 = $this->faker->ipv6;
+        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        Validator::validate(
+            ['input_test' => $v6 . '/64'],
+            ['input_test' => 'private_net']
+        );
+    }
+
+    public function testItRejectsInvalidPrivateNetworksWithIpv4(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid private IP network');
+        Validator::validate(
+            ['input_test' => '123.45.6.0/28'],
+            ['input_test' => 'private_net']
+        );
+    }
+
+    public function testItRejectsInvalidPrivateNetworksWithIpv6(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid private IP network');
+        $v6 = $this->faker->ipv6;
+        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        Validator::validate(
+            ['input_test' => $v6],
+            ['input_test' => 'private_net']
+        );
+    }
 }
