@@ -1,21 +1,22 @@
 {
-  "name": "miken32/ip-validation-rules",
-  "version": "1.0",
-  "description": "description",
-  "minimum-stability": "stable",
+  "name": "miken32/network-rules",
+  "description": "Laravel validation rules for checking IP addresses and networks",
+  "keywords": ["laravel", "validation", "networking", "ip-address", "subnets", "ip-networking"],
   "license": "AGPL-3.0",
   "authors": [
     {
       "name": "Michael Newton",
-      "homepage": "https://github.com/miken32/"
+      "homepage": "https://github.com/miken32/",
+      "role":  "Developer"
     }
   ],
   "require": {
-    "php": "^8.0"
+    "php": "^8.0",
+    "illuminate/support": "^9.0|^10.0",
+    "illuminate/validation": "^9.0|^10.0"
   },
   "require-dev": {
     "fakerphp/faker": "^1.0",
-    "laravel/framework": "^10.0",
     "orchestra/testbench": "^8.0",
     "phpunit/phpunit": "^10.1"
   },
