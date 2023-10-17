@@ -13,6 +13,6 @@ class RoutableIpv4 extends BaseRule
 
     public function message(): string
     {
-        return __('The :attribute field must be a valid routable IPv4 address');
+        return __('The :attribute field must be a routable IPv4 address');
     }
 }

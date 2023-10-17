@@ -210,7 +210,7 @@ class Util
             $high = min($high, self::IPV4_RANGE_MAX);
         }
         if ($high > self::IPV6_RANGE_MAX  || $low > $high || $low < 0) {
-            throw new InvalidArgumentException('Invalid subnet validation rule arguments');
+            throw new InvalidArgumentException('Invalid network validation rule arguments');
         }
 
         return self::validIPAddress($network)

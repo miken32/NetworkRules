@@ -13,6 +13,6 @@ class PrivateIpv4 extends BaseRule
 
     public function message(): string
     {
-        return __('The :attribute field must be a valid private IPv4 address');
+        return __('The :attribute field must be a private IPv4 address');
     }
 }

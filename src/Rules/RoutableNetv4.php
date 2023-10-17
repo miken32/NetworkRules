@@ -29,7 +29,7 @@ class RoutableNetv4 extends BaseRule
             || $this->maxBits > Util::IPV4_RANGE_MAX
             || $this->minBits > $this->maxBits
         ) {
-            throw new InvalidArgumentException('Invalid subnet validation rule arguments');
+            throw new InvalidArgumentException('Invalid network validation rule arguments');
         }
 
         $result = Util::validRoutableIPv4Network($value, $this->minBits, $this->maxBits);
@@ -54,6 +54,6 @@ class RoutableNetv4 extends BaseRule
             );
         }
 
-        return __('The :attribute field must be a valid routable IPv4 network in CIDR notation');
+        return __('The :attribute field must be a routable IPv4 network in CIDR notation');
     }
 }

@@ -47,7 +47,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidPrivateIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid private IPv4 address');
+        $this->expectExceptionMessage('The input test field must be a private IPv4 address');
         Validator::validate(
             ['input_test' => '23.81.66.01'],
             ['input_test' => new Rules\PrivateIpv4()]
@@ -57,7 +57,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidPrivateIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid private IPv6 address');
+        $this->expectExceptionMessage('The input test field must be a private IPv6 address');
         $v6 = $this->faker->ipv6;
         $v6 = '2600' . substr($v6, strpos($v6, ':'));
         Validator::validate(
@@ -69,7 +69,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidPrivateIp(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid private IP address');
+        $this->expectExceptionMessage('The input test field must be a private IP address');
         Validator::validate(
             ['input_test' => '23.81.66.31'],
             ['input_test' => new Rules\PrivateIp()]
@@ -161,7 +161,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidUnboundedIpv4Subnet(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid IPv4 subnet in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be an IPv4 network in CIDR notation');
         Validator::validate(
             ['input_test' => '43.97.4.382/20'],
             ['input_test' => new Rules\Netv4()]
@@ -181,7 +181,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidUnboundedIpSubnetWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid IP address, or a subnet in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be an IP address, or a network in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/48'],
             ['input_test' => new Rules\IpOrNet()]
@@ -191,7 +191,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidUnboundedIpSubnetWithIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid IP address, or a subnet in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be an IP address, or a network in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . 'x/64'],
             ['input_test' => new Rules\IpOrNet()]
@@ -222,7 +222,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidAddressesInNetworkWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid IP address within the 10.0.0.0/8 subnet');
+        $this->expectExceptionMessage('The input test field must be an IP address within the 10.0.0.0/8 network');
         Validator::validate(
             ['input_test' => '172.16.0.56'],
             ['input_test' => new Rules\InNetwork('10.0.0.0/8')]
@@ -232,7 +232,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidAddressesInNetworkWithIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid IP address within the 2601:44ec:a425::/64 subnet');
+        $this->expectExceptionMessage('The input test field must be an IP address within the 2601:44ec:a425::/64 network');
         Validator::validate(
             ['input_test' => '2608:445d:2183:ce42::582c'],
             ['input_test' => new Rules\InNetwork('2601:44ec:a425::/64')]
@@ -272,7 +272,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpv4Addresses(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IPv4 address');
+        $this->expectExceptionMessage('The input test field must be a routable IPv4 address');
         Validator::validate(
             ['input_test' => '192.168.24.10'],
             ['input_test' => new Rules\RoutableIpv4()]
@@ -282,7 +282,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpv6Addresses(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IPv6 address');
+        $this->expectExceptionMessage('The input test field must be a routable IPv6 address');
         Validator::validate(
             ['input_test' => 'fd00:48de:ac19::8d'],
             ['input_test' => new Rules\RoutableIpv6()]
@@ -292,7 +292,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpAddressesWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IP address');
+        $this->expectExceptionMessage('The input test field must be a routable IP address');
         Validator::validate(
             ['input_test' => '10.5.38.218'],
             ['input_test' => new Rules\RoutableIp()]
@@ -302,7 +302,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableAddressesWithIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IP address');
+        $this->expectExceptionMessage('The input test field must be a routable IP address');
         Validator::validate(
             ['input_test' => '2001:0000:0000::f298'],
             ['input_test' => new Rules\RoutableIp()]
@@ -327,7 +327,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidPrivateNetworksWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid private IP network');
+        $this->expectExceptionMessage('The input test field must be a private IP network');
         Validator::validate(
             ['input_test' => '123.45.6.0/28'],
             ['input_test' => new Rules\PrivateNet()]
@@ -337,7 +337,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidPrivateNetworksWithIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid private IP network');
+        $this->expectExceptionMessage('The input test field must be a private IP network');
         $v6 = $this->faker->ipv6;
         $v6 = '2600' . substr($v6, strpos($v6, ':'));
         Validator::validate(
@@ -380,7 +380,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpv4Networks(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IPv4 network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be a routable IPv4 network in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->localIpv4 . '/23'],
             ['input_test' => new Rules\RoutableNetv4()]
@@ -390,7 +390,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpv6Networks(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IPv6 network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be a routable IPv6 network in CIDR notation');
         $v6 = $this->faker->ipv6;
         $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
         Validator::validate(
@@ -402,7 +402,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpNetworksWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IP network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be a routable IP network in CIDR notation');
         Validator::validate(
             ['input_test' => $this->faker->localIpv4 . '/23'],
             ['input_test' => new Rules\RoutableNet()]
@@ -412,7 +412,7 @@ class InstanceValidationTests extends TestCase
     public function testItRejectsInvalidRoutableIpNetworksWithIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be a valid routable IP network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be a routable IP network in CIDR notation');
         $v6 = $this->faker->ipv6;
         $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
         Validator::validate(

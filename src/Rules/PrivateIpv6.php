@@ -13,6 +13,6 @@ class PrivateIpv6 extends BaseRule
 
     public function message(): string
     {
-        return __('The :attribute field must be a valid private IPv6 address');
+        return __('The :attribute field must be a private IPv6 address');
     }
 }

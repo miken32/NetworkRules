@@ -13,6 +13,6 @@ class RoutableIp extends BaseRule
 
     public function message(): string
     {
-        return __("The :attribute field must be a valid routable IP address");
+        return __("The :attribute field must be a routable IP address");
     }
 }

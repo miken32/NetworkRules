@@ -13,6 +13,6 @@ class IpOrNet extends BaseRule
 
     public function message(): string
     {
-        return __("The :attribute field must be a valid IP address, or a subnet in CIDR notation");
+        return __("The :attribute field must be an IP address, or a network in CIDR notation");
     }
 }

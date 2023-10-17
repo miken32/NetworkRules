@@ -33,11 +33,11 @@ class InNetwork extends BaseRule
     public function message(): string
     {
         if (isset($this->networks) && count($this->networks) > 1) {
-            return __('The :attribute field must be a valid IP address within the allowed subnets');
+            return __('The :attribute field must be an IP address within the allowed networks');
         }
 
         return sprintf(
-            __('The :attribute field must be a valid IP address within the %s subnet'),
+            __('The :attribute field must be an IP address within the %s network'),
             $this->networks[0] ?? __('specified')
         );
     }

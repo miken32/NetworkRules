@@ -13,6 +13,6 @@ class PrivateNet extends BaseRule
 
     public function message(): string
     {
-        return __("The :attribute field must be a valid private IP network");
+        return __("The :attribute field must be a private IP network");
     }
 }

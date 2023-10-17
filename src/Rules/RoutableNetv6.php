@@ -29,7 +29,7 @@ class RoutableNetv6 extends BaseRule
             || $this->maxBits > Util::IPV6_RANGE_MAX
             || $this->minBits > $this->maxBits
         ) {
-            throw new InvalidArgumentException('Invalid subnet validation rule arguments');
+            throw new InvalidArgumentException('Invalid network validation rule arguments');
         }
 
         $result = Util::validRoutableIPv6Network($value, $this->minBits, $this->maxBits);
@@ -54,6 +54,6 @@ class RoutableNetv6 extends BaseRule
             );
         }
 
-        return __('The :attribute field must be a valid routable IPv6 network in CIDR notation');
+        return __('The :attribute field must be a routable IPv6 network in CIDR notation');
     }
 }

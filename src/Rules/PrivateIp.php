@@ -13,6 +13,6 @@ class PrivateIp extends BaseRule
 
     public function message(): string
     {
-        return __("The :attribute field must be a valid private IP address");
+        return __("The :attribute field must be a private IP address");
     }
 }

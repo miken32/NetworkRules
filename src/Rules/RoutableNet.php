@@ -13,6 +13,6 @@ class RoutableNet extends BaseRule
 
     public function message(): string
     {
-        return __("The :attribute field must be a valid routable IP network in CIDR notation");
+        return __("The :attribute field must be a routable IP network in CIDR notation");
     }
 }
