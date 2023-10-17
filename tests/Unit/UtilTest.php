@@ -21,10 +21,10 @@ class UtilTest extends TestCase
     }
 
     /**
-     * @covers Util::validIp4Address()
-     * @testdox Util::validIp4Address()
+     * @covers Util::validIPv4Address()
+     * @testdox Util::validIPv4Address()
      */
-    public function testValidIp4Address(): void
+    public function testValidIPv4Address(): void
     {
         $this->assertTrue(Util::validIPv4Address($this->faker->ipv4));
 
@@ -35,7 +35,7 @@ class UtilTest extends TestCase
      * @covers Util::validIPv6Address()
      * @testdox Util::validIPv6Address()
      */
-    public function testValidIp6Address(): void
+    public function testValidIPv6Address(): void
     {
         $this->assertTrue(Util::validIPv6Address($this->faker->ipv6));
 
@@ -46,7 +46,7 @@ class UtilTest extends TestCase
      * @covers Util::validIPAddress()
      * @testdox Util::validIPAddress()
      */
-    public function testValidIpAddress(): void
+    public function testValidIPAddress(): void
     {
         $this->assertTrue(Util::validIPAddress($this->faker->ipv4));
         $this->assertTrue(Util::validIPAddress($this->faker->ipv6));
@@ -59,7 +59,7 @@ class UtilTest extends TestCase
      * @covers Util::validPrivateIPv4Address()
      * @testdox Util::validPrivateIPv4Address()
      */
-    public function testValidIp4PrivateAddress(): void
+    public function testValidPrivateIPv4Address(): void
     {
         $this->assertTrue(Util::validPrivateIPv4Address('10.10.0.48'));
         $this->assertTrue(Util::validPrivateIPv4Address('172.16.20.34'));
@@ -74,7 +74,7 @@ class UtilTest extends TestCase
      * @covers Util::validPrivateIPv6Address()
      * @testdox Util::validPrivateIPv6Address()
      */
-    public function testValidIp6PrivateAddress(): void
+    public function testValidPrivateIPv6Address(): void
     {
         $v6 = $this->faker->ipv6;
         $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
@@ -88,7 +88,7 @@ class UtilTest extends TestCase
      * @covers Util::validPrivateIPAddress()
      * @testdox Util::validPrivateIPAddress()
      */
-    public function testValidIpPrivateAddress(): void
+    public function testValidPrivateIPAddress(): void
     {
         $this->assertTrue(Util::validPrivateIPAddress('10.10.0.48'));
         $this->assertTrue(Util::validPrivateIPAddress('172.16.20.34'));
@@ -124,7 +124,7 @@ class UtilTest extends TestCase
      * @covers Util::validRoutableIPv4Address()
      * @testdox Util::validRoutableIPv4Address()
      */
-    public function testValidRoutableIP4Address(): void
+    public function testValidRoutableIPv4Address(): void
     {
         $this->assertTrue(Util::validRoutableIPv4Address('1.1.1.1'));
         $this->assertTrue(Util::validRoutableIPv4Address('216.234.62.195'));
@@ -141,7 +141,7 @@ class UtilTest extends TestCase
      * @covers Util::validRoutableIPv6Address()
      * @testdox Util::validRoutableIPv6Address()
      */
-    public function testValidRoutableIP6Address(): void
+    public function testValidRoutableIPv6Address(): void
     {
         $v6 = $this->faker->ipv6;
         $v6 = '2600' . substr($v6, strpos($v6, ':'));
@@ -156,7 +156,7 @@ class UtilTest extends TestCase
      * @covers Util::validRoutableIPAddress()
      * @testdox Util::validRoutableIPAddress()
      */
-    public function testValidRoutableAddress(): void
+    public function testValidRoutableIPAddress(): void
     {
         $this->assertTrue(Util::validRoutableIPAddress('1.1.1.1'));
         $this->assertTrue(Util::validRoutableIPAddress('216.234.62.195'));
@@ -177,10 +177,51 @@ class UtilTest extends TestCase
     }
 
     /**
+     * @covers Util::validRoutableIPv4Network()
+     * @testdox Util::validRoutableIPv4Network()
+     */
+    public function testValidRoutableIPv4Network(): void
+    {
+        $this->assertTrue(Util::validRoutableIPv4Network('1.1.0.0/16'));
+        $this->assertTrue(Util::validRoutableIPv4Network('192.167.0.0/15'));
+
+        $this->assertFalse(Util::validRoutableIPv4Network('127.1.0.0/16'));
+        $this->assertFalse(Util::validRoutableIPv4Network('192.168.0.0/15'));
+        $this->assertFalse(Util::validRoutableIPv4Network('1.1.0.0/16', 20, 24));
+    }
+
+    /**
+     * @covers Util::validRoutableIPv6Network()
+     * @testdox Util::validRoutableIPv6Network()
+     */
+    public function testValidRoutableIPv6Network(): void
+    {
+        $this->assertTrue(Util::validRoutableIPv6Network('2000:1234::/32'));
+
+        $this->assertFalse(Util::validRoutableIPv6Network('fd00:1234::/32'));
+        $this->assertFalse(Util::validRoutableIPv6Network('2000:1234::/32', 56, 64));
+    }
+
+    /**
+     * @covers Util::validRoutableIPNetwork()
+     * @testdox Util::validRoutableIPNetwork()
+     */
+    public function testValidRoutableIPNetwork(): void
+    {
+        $this->assertTrue(Util::validRoutableIPv4Network('1.1.0.0/16'));
+        $this->assertTrue(Util::validRoutableIPv4Network('192.167.0.0/15'));
+        $this->assertTrue(Util::validRoutableIPv6Network('2000:1234::/32'));
+
+        $this->assertFalse(Util::validRoutableIPv4Network('127.1.0.0/16'));
+        $this->assertFalse(Util::validRoutableIPv4Network('192.168.0.0/15'));
+        $this->assertFalse(Util::validRoutableIPv6Network('fd00:1234::/32'));
+    }
+
+    /**
      * @covers Util::validIPv4Network()
      * @testdox Util::validIPv4Network()
      */
-    public function testValidIp4Subnet(): void
+    public function testValidIPv4Network(): void
     {
         $this->assertTrue(Util::validIPv4Network($this->faker->ipv4 . '/17'));
         $this->assertTrue(Util::validIPv4Network($this->faker->ipv4 . '/28', 24, 29));
@@ -194,7 +235,7 @@ class UtilTest extends TestCase
      * @covers Util::validIPv6Network()
      * @testdox Util::validIPv6Network()
      */
-    public function testValidIp6Subnet(): void
+    public function testValidIPv6Network(): void
     {
         $this->assertTrue(Util::validIPv6Network($this->faker->ipv6 . '/56', 48, 56));
         $this->assertTrue(Util::validIPv6Network($this->faker->ipv6 . '/56'));
@@ -207,7 +248,7 @@ class UtilTest extends TestCase
      * @covers Util::validIPNetwork()
      * @testdox Util::validIPNetwork()
      */
-    public function testValidIpSubnet(): void
+    public function testValidIPNetwork(): void
     {
         $this->assertTrue(Util::validIPNetwork($this->faker->ipv4 . '/12'));
         $this->assertTrue(Util::validIPNetwork($this->faker->ipv4 . '/28', 24, 29));

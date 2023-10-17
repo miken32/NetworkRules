@@ -124,6 +124,48 @@ class Util
             || self::validRoutableIPv6Address($value);
     }
 
+    public static function validRoutableIPv4Network(
+        string $value,
+        int $low = self::IPV4_RANGE_MIN,
+        int $high = self::IPV4_RANGE_MAX
+    ): bool
+    {
+        if (!self::validIPv4Network($value, $low, $high)) {
+            return false;
+        }
+
+        [$first, $last] = self::getIPv4NetworkRange($value);
+
+        return self::validRoutableIPv4Address($first)
+            && self::validRoutableIPv4Address($last);
+    }
+
+    public static function validRoutableIPv6Network(
+        string $value,
+        int $low = self::IPV6_RANGE_MIN,
+        int $high = self::IPV6_RANGE_MAX
+    ): bool
+    {
+        if (!self::validIPv6Network($value, $low, $high)) {
+            return false;
+        }
+
+        [$first, $last] = self::getIPv6NetworkRange($value);
+
+        return self::validRoutableIPv6Address($first)
+            && self::validRoutableIPv6Address($last);
+    }
+
+    public static function validRoutableIPNetwork(
+        string $value,
+        int $low = self::IPV6_RANGE_MIN,
+        int $high = self::IPV6_RANGE_MAX
+    ): bool
+    {
+        return self::validRoutableIPv4Network($value)
+            || self::validRoutableIPv6Network($value);
+    }
+
     public static function validIPv4Network(
         string $value,
         int $low = self::IPV4_RANGE_MIN,
@@ -199,5 +241,56 @@ class Util
         }
 
         return ($address & $mask) === ($network & $mask);
+    }
+
+    public static function ipv4NetworksOverlap(string $network1, string $network2): bool
+    {
+        if (!self::validIPv4Network($network1) || !self::validIPv4Network($network2)) {
+            return false;
+        }
+
+        [$address1, $bits1] = explode('/', $network1);
+        [$address2, $bits2] = explode('/', $network2);
+
+        [$first, $last] = self::getIPv4NetworkRange($bits1 < $bits2 ? $network2 : $network1);
+
+        return self::addressWithinNetwork($first, $bits1 < $bits2 ? $network1 : $network2)
+            || self::addressWithinNetwork($last, $bits1 < $bits2 ? $network1 : $network2);
+    }
+
+    public static function getIPv4NetworkRange(string $network): array
+    {
+        if (!self::validIPv4Network($network)) {
+            throw new InvalidArgumentException();
+        }
+        [$address, $bits] = explode('/', $network);
+
+        $address = ip2long($address);
+        $mask = -1 << (32 - $bits);
+        $first = long2ip($address & $mask);
+        $last = long2ip($address | ~$mask);
+
+        return [$first, $last];
+    }
+
+    public static function getIPv6NetworkRange(string $network): array
+    {
+        if (!self::validIPv6Network($network)) {
+            throw new InvalidArgumentException();
+        }
+        [$address, $bits] = explode('/', $network);
+
+        $address = inet_pton($address);
+        $mask = str_repeat('f', $bits / 4) . match($bits % 4) {
+                0 => '',
+                1 => '8',
+                2 => 'c',
+                3 => 'e',
+            };
+        $mask = pack('H*', str_pad($mask, 32, '0'));
+        $first = inet_ntop($address & $mask);
+        $last = inet_ntop($address | ~$mask);
+
+        return [$first, $last];
     }
 }

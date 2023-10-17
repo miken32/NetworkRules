@@ -330,4 +330,79 @@ class StringValidationTests extends TestCase
             ['input_test' => 'private_net']
         );
     }
+
+    public function testItAcceptsValidRoutableIpv4Networks(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '1.1.1.1/29'],
+            ['input_test' => 'routable_netv4']
+        );
+    }
+
+    public function testItAcceptsValidRoutableIpv6Networks(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => 'routable_netv6']
+        );
+    }
+
+    public function testItAcceptsValidRoutableIpNetworks(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '1.1.1.1/29'],
+            ['input_test' => 'routable_net']
+        );
+        Validator::validate(
+            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => 'routable_net']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpv4Networks(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IPv4 network in CIDR notation');
+        Validator::validate(
+            ['input_test' => $this->faker->localIpv4 . '/23'],
+            ['input_test' => 'routable_netv4']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpv6Networks(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IPv6 network in CIDR notation');
+        $v6 = $this->faker->ipv6;
+        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        Validator::validate(
+            ['input_test' => $v6],
+            ['input_test' => 'routable_netv6']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpNetworksWithIpv4(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IP network in CIDR notation');
+        Validator::validate(
+            ['input_test' => $this->faker->localIpv4 . '/23'],
+            ['input_test' => 'routable_net']
+        );
+    }
+
+    public function testItRejectsInvalidRoutableIpNetworksWithIpv6(): void
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('The input test field must be a valid routable IP network in CIDR notation');
+        $v6 = $this->faker->ipv6;
+        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        Validator::validate(
+            ['input_test' => $v6],
+            ['input_test' => 'routable_net']
+        );
+    }
 }
