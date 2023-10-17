@@ -212,7 +212,9 @@ class UtilTest extends TestCase
     {
         $this->assertTrue(Util::addressWithinNetwork('143.28.58.221', '143.28.58.128/25'));
         $this->assertTrue(Util::addressWithinNetwork('10.10.10.10', '10.10.10.10/32'));
+        $this->assertTrue(Util::addressWithinNetwork('2600:1a44:ce3a:448c:233c::238', '2600:1a44:ce3a:448c::/64'));
 
         $this->assertFalse(Util::addressWithinNetwork('142.48.28.118', '192.168.0.0/24'));
+        $this->assertFalse(Util::addressWithinNetwork('2600:1a44:ce3a:448c:233c::238', '2600:1a44:ce3a:ffff::/64'));
     }
 }

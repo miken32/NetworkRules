@@ -27,10 +27,11 @@ Here is a list of the available rules and their usage.
 [Routable IPv4](#routable_ipv4)<br/>
 [Routable IPv6](#routable_ipv6)
 
-### in_network:cidr
-The field under validation must be an IP address within the given network. The network must be given in CIDR notation, and may be either an IPv4 or IPv6 network.
+### in_network:cidr,...
+The field under validation must be an IP address within one of the given networks. The networks must be given in CIDR notation, and may be either IPv4 or IPv6 networks.
 ```none
 'ip4_address' => 'in_network:192.168.0.1/24',
+'some_address' => 'in_network:192.168.0.0/24,192.168.1.0/24,192.168.2.0/24',
 'ip6_address' => 'in_network:fd03:224f:a5c3:99ae::0/64'
 ```
 

@@ -184,6 +184,26 @@ class StringValidationTests extends TestCase
         );
     }
 
+    public function testItAcceptsValidAddressesInNetwork(): void
+    {
+        $this->expectNotToPerformAssertions();
+        Validator::validate(
+            ['input_test' => '192.168.34.12'],
+            ['input_test' => 'in_network:192.168.34.0/24']
+        );
+        Validator::validate(
+            ['input_test' => '10.10.42.58'],
+            ['input_test' => 'in_network:192.168.34.0/24,10.0.0.0/8']
+        );
+        Validator::validate(
+            ['input_test' => '2601:44ec:a425::582c'],
+            ['input_test' => 'in_network:2601:44ec:a425::/64']
+        );
+        Validator::validate(
+            ['input_test' => '2000:58c3:18ca:44aa::58ce'],
+            ['input_test' => 'in_network:2601:44ec:a425::/64,2000:58c3:18ca:44aa::/56']
+        );
+    }
     public function testItRejectsInvalidAddressesInNetworkWithIpv4(): void
     {
         $this->expectException(ValidationException::class);
