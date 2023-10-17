@@ -8,7 +8,7 @@ class PrivateIpv4 extends BaseRule
 {
     public function doValidation(string $value, ...$parameters): bool
     {
-        return Util::validIp4PrivateAddress($value);
+        return Util::validPrivateIPv4Address($value);
     }
 
     public function message(): string

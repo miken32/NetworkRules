@@ -20,39 +20,39 @@ class Util
         );
     }
 
-    public static function validIp4Address(string $value): bool
+    public static function validIPv4Address(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 
-    public static function validIp6Address(string $value): bool
+    public static function validIPv6Address(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 
-    public static function validIpAddress(string $value): bool
+    public static function validIPAddress(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6);
     }
 
-    public static function validIp4PrivateAddress(string $value): bool
+    public static function validPrivateIPv4Address(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
             && !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
     }
 
-    public static function validIp6PrivateAddress(string $value): bool
+    public static function validPrivateIPv6Address(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
             && !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
     }
 
-    public static function validIpPrivateAddress(string $value): bool
+    public static function validPrivateIPAddress(string $value): bool
     {
         return !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
     }
 
-    public static function validRoutableIP4Address(string $value): bool
+    public static function validRoutableIPv4Address(string $value): bool
     {
         $priv_res = filter_var(
             $value,
@@ -75,7 +75,7 @@ class Util
         );
     }
 
-    public static function validRoutableIP6Address(string $value): bool
+    public static function validRoutableIPv6Address(string $value): bool
     {
         $priv_res = filter_var(
             $value,
@@ -96,13 +96,13 @@ class Util
         );
     }
 
-    public static function validRoutableAddress(string $value): bool
+    public static function validRoutableIPAddress(string $value): bool
     {
-        return self::validRoutableIP4Address($value)
-            || self::validRoutableIP6Address($value);
+        return self::validRoutableIPv4Address($value)
+            || self::validRoutableIPv6Address($value);
     }
 
-    public static function validIp4Subnet(
+    public static function validIPv4Network(
         string $value,
         int $low = self::IPV4_RANGE_MIN,
         int $high = self::IPV4_RANGE_MAX
@@ -113,10 +113,10 @@ class Util
         }
         [$network, $mask] = explode('/', $value);
 
-        return self::validIp4Address($network) && self::validRange($mask, $low, $high);
+        return self::validIPv4Address($network) && self::validRange($mask, $low, $high);
     }
 
-    public static function validIp6Subnet(
+    public static function validIPv6Network(
         string $value,
         int $low = self::IPV6_RANGE_MIN,
         int $high = self::IPV6_RANGE_MAX
@@ -127,10 +127,10 @@ class Util
         }
         [$network, $mask] = explode('/', $value);
 
-        return self::validIp6Address($network) && self::validRange($mask, $low, $high);
+        return self::validIPv6Address($network) && self::validRange($mask, $low, $high);
     }
 
-    public static function validIpSubnet(
+    public static function validIPNetwork(
         string $value,
         int $low = self::IPV6_RANGE_MIN,
         int $high = self::IPV6_RANGE_MAX
@@ -142,26 +142,26 @@ class Util
 
         [$network, $mask] = explode('/', $value);
 
-        if (!self::validIp6Address($network)) {
+        if (!self::validIPv6Address($network)) {
             $high = min($high, self::IPV4_RANGE_MAX);
         }
         if ($high > self::IPV6_RANGE_MAX  || $low > $high || $low < 0) {
             throw new InvalidArgumentException('Invalid subnet validation rule arguments');
         }
 
-        return self::validIpAddress($network)
+        return self::validIPAddress($network)
             && self::validRange($mask, $low, $high);
     }
 
-    public static function addressWithinSubnet(string $address, string $subnet): bool
+    public static function addressWithinNetwork(string $address, string $subnet): bool
     {
         [$network, $bits] = explode('/', $subnet);
-        if (self::validIp4Address($address) && self::validIp4Subnet($subnet)) {
+        if (self::validIPv4Address($address) && self::validIPv4Network($subnet)) {
             // working with ints
             $address = ip2long($address);
             $network = ip2long($network);
             $mask = -1 << (32 - $bits);
-        } elseif (self::validIp6Address($address) && self::validIp6Subnet($subnet)) {
+        } elseif (self::validIPv6Address($address) && self::validIPv6Network($subnet)) {
             // working with binary strings
             $address = inet_pton($address);
             $network = inet_pton($network);

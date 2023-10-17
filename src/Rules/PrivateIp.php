@@ -8,7 +8,7 @@ class PrivateIp extends BaseRule
 {
     public function doValidation(string $value, ...$parameters): bool
     {
-        return Util::validIpPrivateAddress($value);
+        return Util::validPrivateIPAddress($value);
     }
 
     public function message(): string

@@ -32,7 +32,7 @@ class Netv6 extends BaseRule
             throw new InvalidArgumentException('Invalid subnet validation rule arguments');
         }
 
-        $result = Util::validIp6Subnet($value, $this->minBits, $this->maxBits);
+        $result = Util::validIPv6Network($value, $this->minBits, $this->maxBits);
         if (!$result && str_contains($value, '/')) {
             [, $mask] = explode('/', $value);
             $this->validMask = Util::validRange($mask, $this->minBits, $this->maxBits);

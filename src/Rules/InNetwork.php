@@ -16,7 +16,7 @@ class InNetwork extends BaseRule
             $this->network = $parameters[0] ?? "";
         }
 
-        return Util::addressWithinSubnet($value, $this->network);
+        return Util::addressWithinNetwork($value, $this->network);
     }
 
     public function message(): string

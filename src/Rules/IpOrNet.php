@@ -8,7 +8,7 @@ class IpOrNet extends BaseRule
 {
     public function doValidation(string $value, ...$parameters): bool
     {
-        return Util::validIpAddress($value) || Util::validIpSubnet($value);
+        return Util::validIPAddress($value) || Util::validIPNetwork($value);
     }
 
     public function message(): string

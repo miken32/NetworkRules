@@ -8,7 +8,7 @@ class RoutableIpv4 extends BaseRule
 {
     public function doValidation(string $value, ...$parameters): bool
     {
-        return Util::validRoutableIP4Address($value);
+        return Util::validRoutableIPv4Address($value);
     }
 
     public function message(): string

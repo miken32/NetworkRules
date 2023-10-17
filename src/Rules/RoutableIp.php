@@ -8,7 +8,7 @@ class RoutableIp extends BaseRule
 {
     public function doValidation(string $value, ...$parameters): bool
     {
-        return Util::validRoutableAddress($value);
+        return Util::validRoutableIPAddress($value);
     }
 
     public function message(): string
