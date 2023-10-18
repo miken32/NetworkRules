@@ -134,7 +134,7 @@ class Util
             return false;
         }
 
-        [$first, $last] = self::getIPv4NetworkRange($value);
+        [$first, $last] = self::getNetworkRange($value);
 
         return self::validRoutableIPv4Address($first)
             && self::validRoutableIPv4Address($last);
@@ -150,7 +150,7 @@ class Util
             return false;
         }
 
-        [$first, $last] = self::getIPv6NetworkRange($value);
+        [$first, $last] = self::getNetworkRange($value);
 
         return self::validRoutableIPv6Address($first)
             && self::validRoutableIPv6Address($last);
@@ -162,8 +162,8 @@ class Util
         int $high = self::IPV6_RANGE_MAX
     ): bool
     {
-        return self::validRoutableIPv4Network($value)
-            || self::validRoutableIPv6Network($value);
+        return self::validRoutableIPv4Network($value, $low, $high)
+            || self::validRoutableIPv6Network($value, $low, $high);
     }
 
     public static function validIPv4Network(
@@ -221,24 +221,15 @@ class Util
     {
         [$network, $bits] = explode('/', $subnet);
         if (self::validIPv4Address($address) && self::validIPv4Network($subnet)) {
-            // working with ints
-            $address = ip2long($address);
-            $network = ip2long($network);
-            $mask = -1 << (32 - $bits);
+            $length = 8;
         } elseif (self::validIPv6Address($address) && self::validIPv6Network($subnet)) {
-            // working with binary strings
-            $address = inet_pton($address);
-            $network = inet_pton($network);
-            $mask = str_repeat('f', $bits / 4) . match($bits % 4) {
-                0 => '',
-                1 => '8',
-                2 => 'c',
-                3 => 'e',
-            };
-            $mask = pack('H*', str_pad($mask, 32, '0'));
+            $length = 32;
         } else {
             return false;
         }
+        $address = inet_pton($address);
+        $network = inet_pton($network);
+        $mask = self::bitsToPacked($bits, $length);
 
         return ($address & $mask) === ($network & $mask);
     }
@@ -249,48 +240,44 @@ class Util
             return false;
         }
 
-        [$address1, $bits1] = explode('/', $network1);
-        [$address2, $bits2] = explode('/', $network2);
+        [, $bits1] = explode('/', $network1);
+        [, $bits2] = explode('/', $network2);
 
-        [$first, $last] = self::getIPv4NetworkRange($bits1 < $bits2 ? $network2 : $network1);
+        [$first, $last] = self::getNetworkRange($bits1 < $bits2 ? $network2 : $network1);
 
         return self::addressWithinNetwork($first, $bits1 < $bits2 ? $network1 : $network2)
             || self::addressWithinNetwork($last, $bits1 < $bits2 ? $network1 : $network2);
     }
 
-    public static function getIPv4NetworkRange(string $network): array
+    public static function getNetworkRange(string $network): array
     {
-        if (!self::validIPv4Network($network)) {
+        if (self::validIPv6Network($network)) {
+            $length = 32;
+        } elseif (self::validIPv4Network($network)) {
+            $length = 8;
+        } else {
             throw new InvalidArgumentException();
         }
+
         [$address, $bits] = explode('/', $network);
 
-        $address = ip2long($address);
-        $mask = -1 << (32 - $bits);
-        $first = long2ip($address & $mask);
-        $last = long2ip($address | ~$mask);
+        $address = inet_pton($address);
+        $mask = self::bitsToPacked($bits, $length);
+        $first = inet_ntop($address & $mask);
+        $last = inet_ntop($address | ~$mask);
 
         return [$first, $last];
     }
 
-    public static function getIPv6NetworkRange(string $network): array
+    public static function bitsToPacked(string|int $bits, int $length = 32): string
     {
-        if (!self::validIPv6Network($network)) {
-            throw new InvalidArgumentException();
-        }
-        [$address, $bits] = explode('/', $network);
-
-        $address = inet_pton($address);
         $mask = str_repeat('f', $bits / 4) . match($bits % 4) {
                 0 => '',
                 1 => '8',
                 2 => 'c',
                 3 => 'e',
             };
-        $mask = pack('H*', str_pad($mask, 32, '0'));
-        $first = inet_ntop($address & $mask);
-        $last = inet_ntop($address | ~$mask);
 
-        return [$first, $last];
+        return pack('H*', str_pad($mask, $length, '0'));
     }
 }
