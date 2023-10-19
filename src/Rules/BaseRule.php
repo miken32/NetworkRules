@@ -22,6 +22,8 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     protected bool $extended = false;
 
     /**
+     * Handle validations by string e.g. 'netv4:182.44.1.0/24'
+     *
      * @param string $attribute the field under validation
      * @param string $value the value to be validated
      * @param array $parameters any parameters passed to the rule
@@ -33,11 +35,17 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
         $this->extended = true;
         $this->setValidator($validator);
         $validator->setCustomMessages([$attribute => $this->message()]);
+        $validator->addReplacer(
+            substr(static::class, strrpos(static::class, '\\') + 1),
+            static::class
+        );
 
         return $this->doValidation($value, ...$parameters);
     }
 
     /**
+     * Required by the ValidatorAware interface
+     *
      * @param Validator $validator
      * @return static
      */
@@ -49,7 +57,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     }
 
     /**
-     * Run the validation method; called directly by instance method
+     * Handles validations by instance method, e.g. new Netv4('182.44.1.0/24')
      *
      * @param string $attribute the field under validation
      * @param mixed $value the value to be validated
@@ -64,7 +72,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     }
 
     /**
-     * Laravel 9 interface method
+     * Required by the Laravel 9 Rule interface
      *
      * @param string $attribute
      * @param mixed $value
@@ -73,6 +81,21 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     public function passes($attribute, $value): bool
     {
         return $this->doValidation($value);
+    }
+
+    /**
+     * Custom replacer for failure messages; override per rule as needed; must be called
+     * manually in the message() method when $extended == false
+     *
+     * @param string $message
+     * @param string $attribute
+     * @param string $rule
+     * @param array $parameters
+     * @return string
+     */
+    public function replace(string $message, string $attribute, string $rule, array $parameters): string
+    {
+        return $message;
     }
 
     /**
