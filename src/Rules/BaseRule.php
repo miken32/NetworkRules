@@ -3,15 +3,19 @@
 namespace Miken32\Validation\Network\Rules;
 
 use Closure;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
-use Illuminate\Translation\CreatesPotentiallyTranslatedStrings;
-use Illuminate\Translation\PotentiallyTranslatedString;
 use Illuminate\Validation\Validator;
+use Stringable;
+
+if (!interface_exists(ValidationRule::class)) {
+    // for Laravel 9 compatibility
+    class_alias(Rule::class, ValidationRule::class);
+}
 
 abstract class BaseRule implements ValidatorAwareRule, ValidationRule
 {
-    use CreatesPotentiallyTranslatedStrings;
     protected Validator $validator;
 
     /** @var bool indicates whether we've been called as a result of Validator::extend() */
@@ -33,7 +37,11 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
         return $this->doValidation($value, ...$parameters);
     }
 
-    public function setValidator(Validator $validator): static
+    /**
+     * @param Validator $validator
+     * @return static
+     */
+    public function setValidator($validator): static
     {
         $this->validator = $validator;
 
@@ -45,7 +53,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      *
      * @param string $attribute the field under validation
      * @param mixed $value the value to be validated
-     * @param Closure(string $message):PotentiallyTranslatedString $fail passed an error message on failure
+     * @param Closure(string $message):string|Stringable $fail passed an error message on failure
      * @return void
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -53,6 +61,18 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
         if (!$this->doValidation($value)) {
             $fail($this->message());
         }
+    }
+
+    /**
+     * Laravel 9 interface method
+     *
+     * @param string $attribute
+     * @param mixed $value
+     * @return bool
+     */
+    public function passes($attribute, $value): bool
+    {
+        return $this->doValidation($value);
     }
 
     /**
