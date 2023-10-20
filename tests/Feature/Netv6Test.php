@@ -66,7 +66,7 @@ class Netv6Test extends TestCase
     public function stringRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be an IPv6 network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be an IPv6 network in CIDR notation with a mask between 60 and 64 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/48'],
             ['input_test' => 'netv6:60,64']
@@ -92,7 +92,7 @@ class Netv6Test extends TestCase
     public function instanceRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must have a network mask between 60 and 64 bits');
+        $this->expectExceptionMessage('The input test field must be an IPv6 network in CIDR notation with a mask between 60 and 64 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/48'],
             ['input_test' => new Rules\Netv6(60, 64)]
@@ -105,7 +105,7 @@ class Netv6Test extends TestCase
     public function instanceRejectsUnbounded(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must have a network mask between 0 and 128 bits');
+        $this->expectExceptionMessage('The input test field must be an IPv6 network in CIDR notation with a mask between 0 and 128 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv6 . '/200'],
             ['input_test' => new Rules\Netv6()]

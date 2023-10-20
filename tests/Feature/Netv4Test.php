@@ -66,7 +66,7 @@ class Netv4Test extends TestCase
     public function stringRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be an IPv4 network in CIDR notation');
+        $this->expectExceptionMessage('The input test field must be an IPv4 network in CIDR notation with a mask between 20 and 24 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/28'],
             ['input_test' => 'netv4:20,24']
@@ -92,7 +92,7 @@ class Netv4Test extends TestCase
     public function instanceRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must have a network mask between 20 and 24 bits');
+        $this->expectExceptionMessage('The input test field must be an IPv4 network in CIDR notation with a mask between 20 and 24 bits');
         Validator::validate(
             ['input_test' => $this->faker->ipv4 . '/28'],
             ['input_test' => new Rules\Netv4(20, 24)]

@@ -66,7 +66,7 @@ class InNetworkTest extends TestCase
     public function stringRejectsIpv4(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be an IP address within the specified network');
+        $this->expectExceptionMessage('The input test field must be an IP address within the 10.0.0.0/8 network');
         Validator::validate(
             ['input_test' => '172.16.0.56'],
             ['input_test' => 'in_network:10.0.0.0/8']
@@ -79,7 +79,7 @@ class InNetworkTest extends TestCase
     public function stringRejectsIpv6(): void
     {
         $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('The input test field must be an IP address within the specified network');
+        $this->expectExceptionMessage('The input test field must be an IP address within the 2601:44ec:a425e::/64 network');
         Validator::validate(
             ['input_test' => '2608:445d:2183:ce42::582c'],
             ['input_test' => 'in_network:2601:44ec:a425e::/64']
