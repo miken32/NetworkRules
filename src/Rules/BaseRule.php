@@ -40,7 +40,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
             static::class
         );
 
-        return $this->doValidation($value, ...$parameters);
+        return $this->doValidation($attribute, $value, ...$parameters);
     }
 
     /**
@@ -66,7 +66,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->doValidation($value)) {
+        if (!$this->doValidation($attribute, $value)) {
             $fail($this->message());
         }
     }
@@ -80,7 +80,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      */
     public function passes($attribute, $value): bool
     {
-        return $this->doValidation($value);
+        return $this->doValidation($attribute, $value);
     }
 
     /**
@@ -101,11 +101,12 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     /**
      * Do the actual validation; used by both instance and extend methods
      *
+     * @param string $attribute
      * @param string $value the value to be checked
      * @param mixed ...$parameters for string methods, the paramater array
      * @return bool
      */
-    abstract public function doValidation(string $value, ...$parameters): bool;
+    abstract public function doValidation(string $attribute, string $value, ...$parameters): bool;
 
     /**
      * Return the validation error message

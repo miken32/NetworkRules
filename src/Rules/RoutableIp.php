@@ -6,7 +6,7 @@ use Miken32\Validation\Network\Util;
 
 class RoutableIp extends BaseRule
 {
-    public function doValidation(string $value, ...$parameters): bool
+    public function doValidation(string $attribute, string $value, ...$parameters): bool
     {
         return Util::validRoutableIPAddress($value);
     }

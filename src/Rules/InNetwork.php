@@ -14,7 +14,7 @@ class InNetwork extends BaseRule
         $this->networks = Arr::wrap($network);
     }
 
-    public function doValidation(string $value, ...$parameters): bool
+    public function doValidation(string $attribute, string $value, ...$parameters): bool
     {
         if ($this->extended) {
             $this->networks = $parameters;

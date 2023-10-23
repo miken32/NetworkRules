@@ -14,7 +14,7 @@ class Netv4 extends BaseRule
     {
     }
 
-    public function doValidation(string $value, ...$parameters): bool
+    public function doValidation(string $attribute, string $value, ...$parameters): bool
     {
         if ($this->extended) {
             // called by string method
