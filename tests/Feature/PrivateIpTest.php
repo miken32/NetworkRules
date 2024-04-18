@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Miken32\Validation\Network\Rules;
 use Miken32\Validation\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \Miken32\Validation\Network\Rules\PrivateIp
- */
+#[CoversClass(\Miken32\Validation\Network\Rules\PrivateIp::class)]
 class PrivateIpTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function stringAccepts(): void
     {
         $this->expectNotToPerformAssertions();
@@ -30,9 +28,7 @@ class PrivateIpTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceAccepts(): void
     {
         $this->expectNotToPerformAssertions();
@@ -48,9 +44,7 @@ class PrivateIpTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringRejectsIpv4(): void
     {
         $this->expectException(ValidationException::class);
@@ -61,9 +55,7 @@ class PrivateIpTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringRejectsIpv6(): void
     {
         $this->expectException(ValidationException::class);
@@ -74,9 +66,7 @@ class PrivateIpTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceRejectsIpv4(): void
     {
         $this->expectException(ValidationException::class);
@@ -87,9 +77,7 @@ class PrivateIpTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceRejectsIpv6(): void
     {
         $this->expectException(ValidationException::class);

@@ -6,15 +6,14 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Miken32\Validation\Network\Rules;
 use Miken32\Validation\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \Miken32\Validation\Network\Rules\Netv4
- */
+#[CoversClass(\Miken32\Validation\Network\Rules\Netv4::class)]
+
 class Netv4Test extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function stringAcceptsBounded(): void
     {
         $this->expectNotToPerformAssertions();
@@ -24,9 +23,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringAcceptsUnbounded(): void
     {
         $this->expectNotToPerformAssertions();
@@ -36,9 +33,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceAcceptsBounded(): void
     {
         $this->expectNotToPerformAssertions();
@@ -48,9 +43,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceAcceptsUnbounded(): void
     {
         $this->expectNotToPerformAssertions();
@@ -60,9 +53,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
@@ -73,9 +64,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringRejectsUnbounded(): void
     {
         $this->expectException(ValidationException::class);
@@ -86,9 +75,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceRejectsBounded(): void
     {
         $this->expectException(ValidationException::class);
@@ -99,9 +86,7 @@ class Netv4Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceRejectsUnbounded(): void
     {
         $this->expectException(ValidationException::class);

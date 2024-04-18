@@ -6,15 +6,13 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Miken32\Validation\Network\Rules;
 use Miken32\Validation\Tests\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 
-/**
- * @covers \Miken32\Validation\Network\Rules\RoutableNetv6
- */
+#[CoversClass(\Miken32\Validation\Network\Rules\RoutableNetv6::class)]
 class RoutableNetv6Test extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function stringAccepts(): void
     {
         $this->expectNotToPerformAssertions();
@@ -24,9 +22,7 @@ class RoutableNetv6Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceAccepts(): void
     {
         $this->expectNotToPerformAssertions();
@@ -36,9 +32,7 @@ class RoutableNetv6Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function stringRejects(): void
     {
         $this->expectException(ValidationException::class);
@@ -51,9 +45,7 @@ class RoutableNetv6Test extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function instanceRejects(): void
     {
         $this->expectException(ValidationException::class);
