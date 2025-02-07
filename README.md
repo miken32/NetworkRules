@@ -24,6 +24,7 @@ Here is a list of the available rules and their usage.
 [Private IPv4](#private_ipv4)<br/>
 [Private IPv6](#private_ipv6)<br/>
 [Private Net](#private_net)<br/>
+[Routable IP or Net](#routable_ip_or_net)<br/>
 [Routable IP](#routable_ip)<br/>
 [Routable IPv4](#routable_ipv4)<br/>
 [Routable IPv6](#routable_ipv6)<br/>
@@ -93,6 +94,10 @@ The networks considered private are described in the `private_ip` rule.
 ### private_net
 The field under validation must be a private IP network in CIDR notation.
 The networks considered private are described in the `private_ip` rule.
+
+### routable_ip_or_net
+The field under validation must be a globally routable IP address or network in CIDR notation.
+This excludes all private and reserved ranges, as detailed the the `private_ip` rule.
 
 ### routable_ip
 The field under validation must be a globally routable IPv4 or IPv6 address.
