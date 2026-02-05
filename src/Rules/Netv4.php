@@ -2,32 +2,18 @@
 
 namespace Miken32\Validation\Network\Rules;
 
-use InvalidArgumentException;
 use Miken32\Validation\Network\Util;
 
-class Netv4 extends BaseRule
+class Netv4 extends BaseNetworkRule
 {
-    public function __construct(
-        private ?int $minBits = Util::IPV4_RANGE_MIN,
-        private ?int $maxBits = Util::IPV4_RANGE_MAX
-    )
-    {
-    }
+    protected int $absMin = Util::IPV4_RANGE_MIN;
+    protected int $absMax = Util::IPV4_RANGE_MAX;
 
     public function doValidation(string $attribute, string $value, ...$parameters): bool
     {
         if ($this->extended) {
             // called by string method
-            $this->minBits = (int)($parameters[0] ?? Util::IPV4_RANGE_MIN);
-            $this->maxBits = (int)($parameters[1] ?? Util::IPV4_RANGE_MAX);
-        }
-
-        if (
-            $this->minBits < 0
-            || $this->maxBits > Util::IPV4_RANGE_MAX
-            || $this->minBits > $this->maxBits
-        ) {
-            throw new InvalidArgumentException('Invalid network validation rule arguments');
+            $this->setBitMaskFromParameters($parameters);
         }
 
         return Util::validIPv4Network($value, $this->minBits, $this->maxBits);
