@@ -53,6 +53,47 @@ class Util
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false;
     }
 
+    public static function validPrivateIPv4Network(
+        string $value,
+        int $low = self::IPV4_RANGE_MIN,
+        int $high = self::IPV4_RANGE_MAX
+    ): bool
+    {
+        if (!self::validIPv4Network($value, $low, $high)) {
+            return false;
+        }
+
+        try {
+            [$first, $last] = self::getNetworkRange($value);
+        } catch (Throwable) {
+            return false;
+        }
+
+        return self::validPrivateIPv4Address($first)
+            && self::validPrivateIPv4Address($last);
+    }
+
+
+    public static function validPrivateIPv6Network(
+        string $value,
+        int $low = self::IPV6_RANGE_MIN,
+        int $high = self::IPV6_RANGE_MAX
+    ): bool
+    {
+        if (!self::validIPv6Network($value, $low, $high)) {
+            return false;
+        }
+
+        try {
+            [$first, $last] = self::getNetworkRange($value);
+        } catch (Throwable) {
+            return false;
+        }
+
+        return self::validPrivateIPv6Address($first)
+            && self::validPrivateIPv6Address($last);
+    }
+
     public static function validPrivateIPNetwork(string $value): bool
     {
         if (self::validIPv4Network($value)) {
