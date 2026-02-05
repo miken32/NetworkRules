@@ -7,8 +7,12 @@ use Miken32\Validation\Network\Util;
 
 class InNetwork extends BaseRule
 {
+    /** @var array<string> */
     private array $networks;
 
+    /**
+     * @param string|array<string>|null $network
+     */
     public function __construct(string|array|null $network = null)
     {
         $this->networks = Arr::wrap($network);
@@ -58,7 +62,7 @@ class InNetwork extends BaseRule
         } elseif (count($parameters) === 2) {
             $nets = implode(" or ", $parameters);
         } else {
-            $nets = $parameters[0];
+            $nets = "$parameters[0]";
         }
 
         return str_replace(':net', $nets, $message);

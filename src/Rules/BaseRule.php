@@ -26,7 +26,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      *
      * @param string $attribute the field under validation
      * @param string $value the value to be validated
-     * @param array $parameters any parameters passed to the rule
+     * @param string[] $parameters any parameters passed to the rule
      * @param Validator $validator the validator instance
      * @return bool
      */
@@ -61,7 +61,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      *
      * @param string $attribute the field under validation
      * @param mixed $value the value to be validated
-     * @param Closure(string $message):string|Stringable $fail passed an error message on failure
+     * @param Closure(string $message):(string|Stringable) $fail passed an error message on failure
      * @return void
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
@@ -90,7 +90,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      * @param string $message
      * @param string $attribute
      * @param string $rule
-     * @param array $parameters
+     * @param array<int, string|int> $parameters
      * @return string
      */
     public function replace(string $message, string $attribute, string $rule, array $parameters): string
@@ -103,7 +103,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      *
      * @param string $attribute
      * @param string $value the value to be checked
-     * @param mixed ...$parameters for string methods, the paramater array
+     * @param string ...$parameters for string methods, the paramater array
      * @return bool
      */
     abstract public function doValidation(string $attribute, string $value, ...$parameters): bool;

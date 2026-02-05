@@ -3,6 +3,7 @@
 namespace Miken32\Validation\Network;
 
 use InvalidArgumentException;
+use Throwable;
 
 class Util
 {
@@ -17,39 +18,39 @@ class Util
             $value,
             FILTER_VALIDATE_INT,
             ["options" => ["min_range" => $low, "max_range" => $high]]
-        );
+        ) !== false;
     }
 
     public static function validIPv4Address(string $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 
     public static function validIPv6Address(string $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
     }
 
     public static function validIPAddress(string $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
     }
 
     public static function validPrivateIPv4Address(string $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
-            && !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false
+            && filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false;
     }
 
     public static function validPrivateIPv6Address(string $value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
-            && !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false
+            && filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false;
     }
 
     public static function validPrivateIPAddress(string $value): bool
     {
-        return !filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE);
+        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) === false;
     }
 
     public static function validPrivateIPNetwork(string $value): bool
@@ -80,7 +81,7 @@ class Util
             $value,
             FILTER_VALIDATE_IP,
             FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-        );
+        ) !== false;
         if (!$priv_res) {
             return false;
         }
@@ -103,12 +104,12 @@ class Util
             $value,
             FILTER_VALIDATE_IP,
             FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
-        );
+        ) !== false;
         if (!$priv_res) {
             return false;
         }
         // implementing the same restrictions as PHP 8.2's FILTER_FLAG_GLOBAL_RANGE
-        $ip = str_split(bin2hex(inet_pton($value)), 4);
+        $ip = str_split(bin2hex(inet_pton($value) ?: ""), 4);
 
         return !(
             ($ip[0] === '0100' && $ip[1] === '0000' && $ip[2] === '0000' && $ip[3] === '0000')
@@ -134,7 +135,11 @@ class Util
             return false;
         }
 
-        [$first, $last] = self::getNetworkRange($value);
+        try {
+            [$first, $last] = self::getNetworkRange($value);
+        } catch (Throwable) {
+            return false;
+        }
 
         return self::validRoutableIPv4Address($first)
             && self::validRoutableIPv4Address($last);
@@ -150,7 +155,11 @@ class Util
             return false;
         }
 
-        [$first, $last] = self::getNetworkRange($value);
+        try {
+            [$first, $last] = self::getNetworkRange($value);
+        } catch (Throwable) {
+            return false;
+        }
 
         return self::validRoutableIPv6Address($first)
             && self::validRoutableIPv6Address($last);
@@ -176,8 +185,11 @@ class Util
             return false;
         }
         [$network, $mask] = explode('/', $value);
+        if ($mask < self::IPV4_RANGE_MIN || $mask > self::IPV4_RANGE_MAX) {
+            return false;
+        }
 
-        return self::validIPv4Address($network) && self::validRange($mask, $low, $high);
+        return self::validIPv4Address($network) && self::validRange((int)$mask, $low, $high);
     }
 
     public static function validIPv6Network(
@@ -190,8 +202,11 @@ class Util
             return false;
         }
         [$network, $mask] = explode('/', $value);
+        if ($mask < self::IPV6_RANGE_MIN || $mask > self::IPV6_RANGE_MAX) {
+            return false;
+        }
 
-        return self::validIPv6Address($network) && self::validRange($mask, $low, $high);
+        return self::validIPv6Address($network) && self::validRange((int)$mask, $low, $high);
     }
 
     public static function validIPNetwork(
@@ -214,12 +229,11 @@ class Util
         }
 
         return self::validIPAddress($network)
-            && self::validRange($mask, $low, $high);
+            && self::validRange((int)$mask, $low, $high);
     }
 
     public static function addressWithinNetwork(string $address, string $subnet): bool
     {
-        [$network, $bits] = explode('/', $subnet);
         if (self::validIPv4Address($address) && self::validIPv4Network($subnet)) {
             $length = 8;
         } elseif (self::validIPv6Address($address) && self::validIPv6Network($subnet)) {
@@ -227,8 +241,19 @@ class Util
         } else {
             return false;
         }
-        $address = inet_pton($address);
-        $network = inet_pton($network);
+
+        [$network, $bits] = explode('/', $subnet);
+        $bits = (int)$bits;
+        $address = inet_pton($address) ?: "";
+        $network = inet_pton($network) ?: "";
+        if (
+            $bits < self::IPV6_RANGE_MIN
+            || $bits > self::IPV6_RANGE_MAX
+            || $address === ""
+            || $network === ""
+        ) {
+            return false;
+        }
         $mask = self::bitsToPacked($bits, $length);
 
         return ($address & $mask) === ($network & $mask);
@@ -243,12 +268,19 @@ class Util
         [, $bits1] = explode('/', $network1);
         [, $bits2] = explode('/', $network2);
 
-        [$first, $last] = self::getNetworkRange($bits1 < $bits2 ? $network2 : $network1);
+        try {
+            [$first, $last] = self::getNetworkRange($bits1 < $bits2 ? $network2 : $network1);
+        } catch (Throwable) {
+            return false;
+        }
 
         return self::addressWithinNetwork($first, $bits1 < $bits2 ? $network1 : $network2)
             || self::addressWithinNetwork($last, $bits1 < $bits2 ? $network1 : $network2);
     }
 
+    /**
+     * @return string[]
+     */
     public static function getNetworkRange(string $network): array
     {
         if (self::validIPv6Network($network)) {
@@ -260,23 +292,39 @@ class Util
         }
 
         [$address, $bits] = explode('/', $network);
+        $bits = (int)$bits;
 
-        $address = inet_pton($address);
+        $address = inet_pton($address) ?: "";
+        if (
+            $bits < self::IPV6_RANGE_MIN
+            || $bits > self::IPV6_RANGE_MAX
+            || $address === ""
+        ) {
+            throw new InvalidArgumentException();
+        }
+
         $mask = self::bitsToPacked($bits, $length);
-        $first = inet_ntop($address & $mask);
-        $last = inet_ntop($address | ~$mask);
+        $first = inet_ntop($address & $mask) ?: "";
+        $last = inet_ntop($address | ~$mask) ?: "";
+
+        if ($first === "" || $last === "") {
+            throw new InvalidArgumentException();
+        }
 
         return [$first, $last];
     }
 
-    public static function bitsToPacked(string|int $bits, int $length = 32): string
+    /**
+     * @param int<self::IPV6_RANGE_MIN,self::IPV6_RANGE_MAX> $bits
+     */
+    public static function bitsToPacked(int $bits, int $length = 32): string
     {
-        $mask = str_repeat('f', $bits / 4) . match($bits % 4) {
-                0 => '',
-                1 => '8',
-                2 => 'c',
-                3 => 'e',
-            };
+        $mask = str_repeat('f', intdiv($bits, 4)) . match($bits % 4) {
+            0 => '',
+            1 => '8',
+            2 => 'c',
+            3 => 'e',
+        };
 
         return pack('H*', str_pad($mask, $length, '0'));
     }
