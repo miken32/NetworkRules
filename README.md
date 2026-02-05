@@ -18,6 +18,7 @@ Here is a list of the available rules and their usage.
 
 [In Network](#in_networkcidr)<br/>
 [IP Or Net](#ip_or_net)<br/>
+[Network](#network)
 [Netv4](#netv4lowhigh)<br/>
 [Netv6](#netv6lowhigh)<br/>
 [Private IP](#private_ip)<br/>
@@ -44,6 +45,10 @@ The networks must be given in CIDR notation, and may be either IPv4 or IPv6 netw
 ### ip_or_net
 The field under validation must be an IP address or network in CIDR notation.
 The address or network may be either IPv4 or IPv6.
+
+### network
+The field under validation must be an IP network in CIDR notation.
+The network may be either IPv4 or IPv6; use individual rules to limit mask bits.
 
 ### netv4:_low_,_high_
 The field under validation must be an IPv4 network in CIDR notation.

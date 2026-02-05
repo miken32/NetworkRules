@@ -28,6 +28,7 @@ class ValidationProvider extends ServiceProvider
             $validator->extend('netv6', Rules\Netv6::class . '@extend');
             $validator->extend('routable_netv6', Rules\RoutableNetv6::class . '@extend');
             $validator->extend('in_network', Rules\InNetwork::class . '@extend');
+            $validator->extend('network', Rules\Network::class . '@extend');
         });
     }
 }
