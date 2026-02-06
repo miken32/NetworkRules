@@ -21,7 +21,7 @@ class RoutableIpOrNetTest extends TestCase
             ['input_test' => 'routable_ip_or_net']
         );
         Validator::validate(
-            ['input_test' => '2600:482e:1948::21'],
+            ['input_test' => $this->publicIpv6()],
             ['input_test' => 'routable_ip_or_net']
         );
         Validator::validate(
@@ -29,7 +29,7 @@ class RoutableIpOrNetTest extends TestCase
             ['input_test' => 'routable_ip_or_net']
         );
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => 'routable_ip_or_net']
         );
     }
@@ -43,7 +43,7 @@ class RoutableIpOrNetTest extends TestCase
             ['input_test' => new Rules\RoutableIpOrNet()]
         );
         Validator::validate(
-            ['input_test' => '2600:482e:1948::21'],
+            ['input_test' => $this->publicIpv6()],
             ['input_test' => new Rules\RoutableIpOrNet()]
         );
         Validator::validate(
@@ -51,7 +51,7 @@ class RoutableIpOrNetTest extends TestCase
             ['input_test' => new Rules\RoutableIpOrNet()]
         );
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => new Rules\RoutableIpOrNet()]
         );
     }
@@ -80,14 +80,13 @@ class RoutableIpOrNetTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP address or IP network in CIDR notation');
         Validator::validate(
-            ['input_test' => '2001:0000:0000::f298'],
+            ['input_test' => $this->publicIpv6()],
             ['input_test' => 'routable_ip_or_net']
         );
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP address or IP network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'routable_ip_or_net']
@@ -118,14 +117,13 @@ class RoutableIpOrNetTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP address or IP network in CIDR notation');
         Validator::validate(
-            ['input_test' => '2001:0000:0000::f298'],
+            ['input_test' => $this->publicIpv6()],
             ['input_test' => new Rules\RoutableIpOrNet()]
         );
 
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP address or IP network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => new Rules\RoutableIpOrNet()]

@@ -16,8 +16,7 @@ class PrivateNetv6Test extends TestCase
     public function stringAccepts(): void
     {
         $this->expectNotToPerformAssertions();
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'private_netv6']
@@ -28,8 +27,7 @@ class PrivateNetv6Test extends TestCase
     public function instanceAccepts(): void
     {
         $this->expectNotToPerformAssertions();
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => new Rules\PrivateNetv6()]
@@ -42,7 +40,7 @@ class PrivateNetv6Test extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a private IPv6 network in CIDR notation');
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => 'private_netv6']
         );
     }
@@ -53,7 +51,7 @@ class PrivateNetv6Test extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a private IPv6 network in CIDR notation');
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => new Rules\PrivateNetv6()]
         );
     }

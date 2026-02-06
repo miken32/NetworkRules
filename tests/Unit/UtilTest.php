@@ -85,11 +85,9 @@ class UtilTest extends TestCase
     #[TestDox('Util::validPrivateIPv6Address()')]
     public function testValidPrivateIPv6Address(): void
     {
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->privateIpv6();
         $this->assertTrue(Util::validPrivateIPv6Address($v6));
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->publicIpv6();
         $this->assertFalse(Util::validPrivateIPv6Address($v6));
     }
 
@@ -103,16 +101,12 @@ class UtilTest extends TestCase
         $this->assertTrue(Util::validPrivateIPAddress('10.10.0.48'));
         $this->assertTrue(Util::validPrivateIPAddress('172.16.20.34'));
         $this->assertTrue(Util::validPrivateIPAddress('192.168.10.128'));
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
-        $this->assertTrue(Util::validPrivateIPAddress($v6));
+        $this->assertTrue(Util::validPrivateIPAddress('fd00:1234:abcd::48'));
 
         $this->assertFalse(Util::validPrivateIPAddress('169.254.229.28'));
         $this->assertFalse(Util::validPrivateIPAddress('172.12.68.206'));
         $this->assertFalse(Util::validPrivateIPAddress('240.234.58.22'));
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
-        $this->assertFalse(Util::validPrivateIPAddress($v6));
+        $this->assertFalse(Util::validPrivateIPAddress('2600:1245:abcd::4582'));
     }
 
     /**
@@ -156,12 +150,8 @@ class UtilTest extends TestCase
     #[TestDox('Util::validRoutableIPv6Address()')]
     public function testValidRoutableIPv6Address(): void
     {
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
-        $this->assertTrue(Util::validRoutableIPv6Address($v6));
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
-        $this->assertFalse(Util::validRoutableIPv6Address($v6));
+        $this->assertTrue(Util::validRoutableIPv6Address('2600:45c3:8c2a::33ac'));
+        $this->assertFalse(Util::validRoutableIPv6Address('fd00:45c3:8c2a::33ac'));
         $this->assertFalse(Util::validRoutableIPv6Address('2001::f00d:3ac3'));
     }
 
@@ -174,9 +164,7 @@ class UtilTest extends TestCase
     {
         $this->assertTrue(Util::validRoutableIPAddress('1.1.1.1'));
         $this->assertTrue(Util::validRoutableIPAddress('216.234.62.195'));
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
-        $this->assertTrue(Util::validRoutableIPAddress($v6));
+        $this->assertTrue(Util::validRoutableIPAddress('2600:45c3:8c2a::33ac'));
 
         $this->assertFalse(Util::validRoutableIPAddress('10.10.0.48'));
         $this->assertFalse(Util::validRoutableIPAddress('172.16.20.34'));
@@ -184,9 +172,7 @@ class UtilTest extends TestCase
         $this->assertFalse(Util::validRoutableIPAddress('169.254.229.28'));
         $this->assertFalse(Util::validRoutableIPAddress('172.16.68.206'));
         $this->assertFalse(Util::validRoutableIPAddress('240.234.58.22'));
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
-        $this->assertFalse(Util::validRoutableIPAddress($v6));
+        $this->assertFalse(Util::validRoutableIPAddress('fd00:45c3:8c2a:33ac::/64'));
         $this->assertFalse(Util::validRoutableIPAddress('2001::f00d:3ac3'));
     }
 

@@ -20,8 +20,7 @@ class PrivateIpTest extends TestCase
             ['input_test' => $this->faker->localIpv4],
             ['input_test' => 'private_ip']
         );
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->privateIpv6();
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'private_ip']
@@ -36,8 +35,7 @@ class PrivateIpTest extends TestCase
             ["input_test" => $this->faker->localIpv4],
             ["input_test" => new Rules\PrivateIp()]
         );
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->privateIpv6();
         Validator::validate(
             ["input_test" => $v6],
             ["input_test" => new Rules\PrivateIp()]
@@ -83,7 +81,7 @@ class PrivateIpTest extends TestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a private IP address');
         Validator::validate(
-            ['input_test' => '2600:2342:8ca3:8282::c3ae'],
+            ['input_test' => $this->publicIpv6()],
             ['input_test' => new Rules\PrivateIp()]
         );
     }

@@ -20,10 +20,9 @@ class PrivateNetTest extends TestCase
             ['input_test' => $this->faker->localIpv4 . '/20'],
             ['input_test' => 'private_net']
         );
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
-            ['input_test' => $v6 . '/64'],
+            ['input_test' => $v6],
             ['input_test' => 'private_net']
         );
     }
@@ -36,10 +35,9 @@ class PrivateNetTest extends TestCase
             ['input_test' => $this->faker->localIpv4 . '/20'],
             ['input_test' => 'private_net']
         );
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
-            ['input_test' => $v6 . '/64'],
+            ['input_test' => $v6],
             ['input_test' => new Rules\PrivateNet()]
         );
     }
@@ -60,8 +58,7 @@ class PrivateNetTest extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a private IP network');
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->publicIpv6();
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'private_net']
@@ -84,8 +81,7 @@ class PrivateNetTest extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a private IP network');
-        $v6 = $this->faker->ipv6;
-        $v6 = '2600' . substr($v6, strpos($v6, ':'));
+        $v6 = $this->publicIpv6();
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => new Rules\PrivateNet()]

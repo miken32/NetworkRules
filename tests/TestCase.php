@@ -14,4 +14,24 @@ class TestCase extends BaseTestCase
     {
         return [ValidationProvider::class];
     }
+
+    protected function privateIpv6(bool $mask = false): string
+    {
+        $v6 = $this->faker->ipv6;
+        if ($mask) {
+            $v6 .= '/' . $this->faker->numberBetween(8, 128);
+        }
+
+        return 'fd00' . substr($v6, strpos($v6, ':') ?: 0);
+    }
+
+    protected function publicIpv6(bool $mask = false): string
+    {
+        $v6 = $this->faker->ipv6;
+        if ($mask) {
+            $v6 .= '/' . $this->faker->numberBetween(4, 128);
+        }
+
+        return '2600' . substr($v6, strpos($v6, ':') ?: 0);
+    }
 }

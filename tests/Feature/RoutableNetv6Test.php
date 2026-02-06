@@ -17,7 +17,7 @@ class RoutableNetv6Test extends TestCase
     {
         $this->expectNotToPerformAssertions();
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => 'routable_netv6']
         );
     }
@@ -27,7 +27,7 @@ class RoutableNetv6Test extends TestCase
     {
         $this->expectNotToPerformAssertions();
         Validator::validate(
-            ['input_test' => '2600:2345:23ac::/56'],
+            ['input_test' => $this->publicIpv6(true)],
             ['input_test' => new Rules\RoutableNetv6()]
         );
     }
@@ -37,8 +37,7 @@ class RoutableNetv6Test extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IPv6 network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'routable_netv6']
@@ -50,8 +49,7 @@ class RoutableNetv6Test extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IPv6 network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => new Rules\RoutableNetv6()]

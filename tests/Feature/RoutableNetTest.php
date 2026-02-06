@@ -56,8 +56,7 @@ class RoutableNetTest extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => 'routable_net']
@@ -80,8 +79,7 @@ class RoutableNetTest extends TestCase
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('The input test field must be a routable IP network in CIDR notation');
-        $v6 = $this->faker->ipv6;
-        $v6 = 'fd00' . substr($v6, strpos($v6, ':')) . '/64';
+        $v6 = $this->privateIpv6(true);
         Validator::validate(
             ['input_test' => $v6],
             ['input_test' => new Rules\RoutableNet()]
