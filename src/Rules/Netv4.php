@@ -23,7 +23,12 @@ class Netv4 extends BaseNetworkRule
     {
         $message = __('The :attribute field must be an IPv4 network in CIDR notation');
         if (!$this->extended) {
-            $message = $this->replace($message, "", "", [$this->minBits, $this->maxBits]);
+            $message = $this->replace(
+                $message,
+                "",
+                "",
+                ["$this->minBits", "$this->maxBits"]
+            );
         }
 
         return $message;

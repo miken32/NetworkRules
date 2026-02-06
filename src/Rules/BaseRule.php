@@ -58,7 +58,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$this->doValidation($attribute, $value)) {
+        if (!is_scalar($value) || !$this->doValidation($attribute, "$value")) {
             $fail($this->message());
         }
     }
@@ -70,7 +70,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      * @param string $message
      * @param string $attribute
      * @param string $rule
-     * @param array<int, string|int> $parameters
+     * @param array<int, string> $parameters
      * @return string
      */
     public function replace(string $message, string $attribute, string $rule, array $parameters): string

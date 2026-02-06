@@ -20,7 +20,12 @@ class PrivateNetv6 extends BaseNetworkRule
     {
         $message = __('The :attribute field must be a private IPv6 network in CIDR notation');
         if (!$this->extended) {
-            $message = $this->replace($message, "", "", [$this->minBits, $this->maxBits]);
+            $message = $this->replace(
+                $message,
+                "",
+                "",
+                ["$this->minBits", "$this->maxBits"]
+            );
         }
 
         return $message;

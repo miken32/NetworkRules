@@ -7,21 +7,21 @@ use Miken32\Validation\Network\Util;
 
 class InNetwork extends BaseRule
 {
-    /** @var array<string> */
+    /** @var array<int, string> */
     private array $networks;
 
     /**
-     * @param string|array<string>|null $network
+     * @param string|array<int, string>|null $network
      */
     public function __construct(string|array|null $network = null)
     {
-        $this->networks = Arr::wrap($network);
+        $this->networks = is_array($network) ? $network : ($network ? [$network] : []);
     }
 
     public function doValidation(string $attribute, string $value, ...$parameters): bool
     {
         if ($this->extended) {
-            $this->networks = $parameters;
+            $this->networks = array_values($parameters);
         }
 
         foreach ($this->networks as $network) {
