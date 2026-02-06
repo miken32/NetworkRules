@@ -3,16 +3,10 @@
 namespace Miken32\Validation\Network\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\ValidatorAwareRule;
 use Illuminate\Validation\Validator;
 use Stringable;
-
-if (!interface_exists(ValidationRule::class)) {
-    // for Laravel 9 compatibility
-    class_alias(Rule::class, ValidationRule::class);
-}
 
 abstract class BaseRule implements ValidatorAwareRule, ValidationRule
 {
@@ -44,12 +38,10 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     }
 
     /**
-     * Required by the ValidatorAware interface
-     *
      * @param Validator $validator
      * @return static
      */
-    public function setValidator($validator): static
+    public function setValidator(Validator $validator): static
     {
         $this->validator = $validator;
 
@@ -72,18 +64,6 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
     }
 
     /**
-     * Required by the Laravel 9 Rule interface
-     *
-     * @param string $attribute
-     * @param mixed $value
-     * @return bool
-     */
-    public function passes($attribute, $value): bool
-    {
-        return $this->doValidation($attribute, $value);
-    }
-
-    /**
      * Custom replacer for failure messages; override per rule as needed; must be called
      * manually in the message() method when $extended == false
      *
@@ -103,7 +83,7 @@ abstract class BaseRule implements ValidatorAwareRule, ValidationRule
      *
      * @param string $attribute
      * @param string $value the value to be checked
-     * @param string ...$parameters for string methods, the paramater array
+     * @param string ...$parameters for string methods, the parameter array
      * @return bool
      */
     abstract public function doValidation(string $attribute, string $value, ...$parameters): bool;
