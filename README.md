@@ -1,6 +1,6 @@
-<p align="center">
-<big>A Collection of Rules<br/>
-for the <i>Reliable Validation</i></big><br/>
+<p style="text-align: center">
+<span style="font-size: larger">A Collection of Rules<br/>
+for the <i>Reliable Validation</i></span><br/>
 of<br/>
 Internet Protocol Addreſſes,<br/>
 Networks, and Subnets<br/>
@@ -173,5 +173,28 @@ class AnotherFormRequest extends FormRequest
           'ipv6_subnet'  => [new Rules\Netv6(48, 56)], // must be an IPv6 CIDR network between 48 and 56 bits
         ];
     }
+}
+```
+
+## Standalone Usage
+These checks can be used outside the Laravel framework as well; the `Util` class provides
+many static methods for validating input using the framework (or not!) of your choice. 
+```php
+<?php
+
+use Miken32\Validation\Network\Util;
+
+$allowed_network = '172.16.40.0/22';
+
+if (!Util::addressWithinNetwork($_POST["ip_address"], $allowed_network)) {
+    // failure!
+}
+
+if (Util::validPrivateIPAddress($_POST["private_ip"])) {
+    // success!
+}
+
+if (Util::validIPv6Network($_POST["ipv6_network"]), 56) {
+    // success!
 }
 ```
