@@ -18,7 +18,7 @@ Here is a list of the available rules and their usage.
 
 [In Network](#in_networkcidr)<br/>
 [IP Or Net](#ip_or_net)<br/>
-[Network](#network)
+[Network](#network)<br/>
 [Netv4](#netv4lowhigh)<br/>
 [Netv6](#netv6lowhigh)<br/>
 [Private IP](#private_ip)<br/>
