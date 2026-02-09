@@ -3,6 +3,7 @@
 namespace Miken32\Validation\Tests;
 
 use Illuminate\Foundation\Testing\WithFaker;
+use Miken32\Validation\Network\Providers\ArrProvider;
 use Miken32\Validation\Network\Providers\ValidationProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -12,7 +13,7 @@ class TestCase extends BaseTestCase
 
     protected function getPackageProviders($app): array
     {
-        return [ValidationProvider::class];
+        return [ArrProvider::class, ValidationProvider::class];
     }
 
     protected function privateIpv6(bool $mask = false): string

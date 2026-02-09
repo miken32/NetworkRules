@@ -49,21 +49,7 @@ class InNetwork extends BaseRule
      */
     public function replace(string $message, string $attribute, string $rule, array $parameters): string
     {
-        if (count($parameters) > 2) {
-            array_walk($parameters, function(&$v, $k) use ($parameters) {
-                if ($k < count($parameters) - 1) {
-                    $v .= ',';
-                }
-                if ($k === count($parameters) - 2) {
-                    $v .= ' or';
-                }
-            });
-            $nets = implode(" ", $parameters);
-        } elseif (count($parameters) === 2) {
-            $nets = implode(" or ", $parameters);
-        } else {
-            $nets = "$parameters[0]";
-        }
+        $nets = Arr::oxfordplode($parameters, 'or');
 
         return str_replace(':net', $nets, $message);
     }
