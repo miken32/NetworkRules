@@ -1,4 +1,4 @@
-<p style="text-align: center">
+<p align="center">
 <span style="font-size: larger">A Collection of Rules<br/>
 for the <i>Reliable Validation</i></span><br/>
 of<br/>
@@ -17,6 +17,7 @@ composer require miken32/network-rules
 Here is a list of the available rules and their usage.
 
 [In Network](#in_networkcidr)<br/>
+[Outside Network](#outside_networkcidr)<br/>
 [IP Or Net](#ip_or_net)<br/>
 [Network](#network)<br/>
 [Netv4](#netv4lowhigh)<br/>
@@ -33,13 +34,21 @@ Here is a list of the available rules and their usage.
 [Routable Netv4](#routable_netv4lowhigh)<br/>
 [Routable Netv6](#routable_netv6lowhigh)<br/>
 
-### in_network:cidr,...
+### in_network:_cidr_,...
 The field under validation must be an IP address within one of the given networks.
 The networks must be given in CIDR notation, and may be either IPv4 or IPv6 networks.
 ```none
 'ip4_address' => 'in_network:192.168.0.1/24',
 'some_address' => 'in_network:192.168.0.0/24,192.168.1.0/24,192.168.2.0/24',
 'ip6_address' => 'in_network:fd03:224f:a5c3:99ae::0/64'
+```
+### outside_network:_cidr_,...
+The field under validation must be an IP address outside all of the given networks.
+The networks must be given in CIDR notation, and may be either IPv4 or IPv6 networks.
+```none
+'ip4_address' => 'outside_network:192.168.0.1/24',
+'some_address' => 'outside_network:192.168.0.0/24,192.168.1.0/24,192.168.2.0/24',
+'ip6_address' => 'outside_network:fd03:224f:a5c3:99ae::0/64'
 ```
 
 ### ip_or_net
@@ -175,6 +184,11 @@ class AnotherFormRequest extends FormRequest
     }
 }
 ```
+Note, for all methods that accept a minimum or maximum bit mask, unspecified arguments
+default to the minimum or maximum count, depending on the type of network. For example,
+`new Rules\Netv6(48)` or `netv6:48` are equivalent to `new Rules\Netv6(48,128)` or
+`netv6:48,128`. To specify an exact bit mask, use the same value for both arguments:
+`new Rules\Netv6(48, 48)` or `netv6:48,48`.
 
 ## Standalone Usage
 These checks can be used outside the Laravel framework as well; the `Util` class provides
