@@ -4,7 +4,6 @@ namespace Miken32\Validation\Network\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Arr;
-use InvalidArgumentException;
 
 class ArrProvider extends ServiceProvider
 {
@@ -15,17 +14,15 @@ class ArrProvider extends ServiceProvider
             /**
              * Implode with an Oxford comma
              *
-             * @param string[]|int[]|float[]|bool[] $array
+             * @param scalar[] $array
              * @param string $conjunction
              * @return string
              */
             function(array $array, string $conjunction = 'and'): string
             {
-                if (array_filter($array, fn ($v) => !is_scalar($v))) {
-                    throw new InvalidArgumentException();
-                }
+                $array = array_filter($array, fn ($v) => is_scalar($v));
                 if (count($array) === 1) {
-                    return strval(array_first($array));
+                    return strval(array_shift($array));
                 }
                 $conjunction = ' ' . trim($conjunction) . ' ';
                 if (count($array) === 2) {
